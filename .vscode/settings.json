@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./serpapi_data_ingestion"
+    ]
+}
