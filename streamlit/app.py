@@ -1,7 +1,11 @@
 import streamlit as st
 from auth_user import create_user,login_user
 from utils import get_restaurant_names
-#get_restaurant_id, call_serpapi
+import sys
+sys.path.insert(0, '../serpapi_data_ingestion')
+from main import get_reviews
+from eda import eda
+
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
 with st.sidebar:
@@ -57,8 +61,9 @@ if  st.session_state['login'] == True:
     tab1, tab2 = st.tabs(["Home", "Explore a Restaurant🔎"])
     with tab1:
         st.title(" Welcome to your.... BITEBUDDY! 🍽️")
+        eda()
     with tab2:
-        st.title("Restaurant Information App")
+        st.header("Pick a restaurant!")
 
         #select box for restaurant names
         restaurant_names = get_restaurant_names()
@@ -66,21 +71,11 @@ if  st.session_state['login'] == True:
 
         if st.button("Get Dish Recommendations"):
             # Get the restaurant ID from Snowflake
-            restaurant_id = get_restaurant_id(selected_restaurant)
-
-            if restaurant_id is not None:
-                # Make a request to SerpApi using the restaurant ID
-                serpapi_data = call_serpapi(restaurant_id)
-
-                if serpapi_data:
-                    # Display the SerpApi data
-                    st.write("Restaurant Info from SerpApi:")
-                    st.write(serpapi_data)
-                else:
-                    st.error("Failed to retrieve data from SerpApi.")
-            else:
-                st.error("Restaurant not found in the database.")
-            
-            # st.image('1.', width=500)
+            df = get_reviews(selected_restaurant)
+            st.header("Hmm, here's what people say.....")
+            st.write(df)
+            st.subheader("User Comments:")
+            for index, row in df.iterrows():
+                st.write(row['Reviews'])
 
 # dummy comment

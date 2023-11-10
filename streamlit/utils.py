@@ -69,5 +69,14 @@ def get_restaurant_names():
     # Remove duplicates
     data.drop_duplicates(subset=['GMAP_ID', 'BUSINESS_NAME'], keep='first', inplace=True)
     # Extract the restaurant names from the desired column
-    restaurant_names = data['BUSINESS_NAME'].tolist()  
+    restaurant_names = data['BUSINESS_NAME'].tolist()
     return restaurant_names
+
+def get_cleaned_data():
+    # Read the CSV file into a pandas DataFrame
+    data = pd.read_excel('Reviews_sample_data.xlsx')
+    # Extract the necessary columns
+    data = data[['GMAP_ID', 'BUSINESS_NAME']]
+    # Remove duplicates
+    data.drop_duplicates(subset=['GMAP_ID', 'BUSINESS_NAME'], keep='first', inplace=True)
+    return data
