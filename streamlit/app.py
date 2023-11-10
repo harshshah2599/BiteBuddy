@@ -1,6 +1,7 @@
 import streamlit as st
 from auth_user import create_user,login_user
-#from utils import get_restaurant_id, call_serpapi
+from utils import get_restaurant_names
+#get_restaurant_id, call_serpapi
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
 with st.sidebar:
@@ -60,7 +61,8 @@ if  st.session_state['login'] == True:
         st.title("Restaurant Information App")
 
         #select box for restaurant names
-        selected_restaurant = st.selectbox("Select a restaurant:", ["Restaurant A", "Restaurant B", "Restaurant C"])
+        restaurant_names = get_restaurant_names()
+        selected_restaurant = st.selectbox("Select a restaurant:", restaurant_names)
 
         if st.button("Get Dish Recommendations"):
             # Get the restaurant ID from Snowflake
