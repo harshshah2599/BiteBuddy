@@ -3,8 +3,10 @@ from auth_user import create_user,login_user
 from utils import get_restaurant_names
 import sys
 sys.path.insert(0, '../serpapi_data_ingestion')
-from main import get_reviews
+sys.path.insert(1, '../snowflake')
+from main import get_reviews, get_map
 from eda import eda
+from snowflake_data import get_snowflake_data
 
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
@@ -54,13 +56,14 @@ with st.sidebar:
 
 if  st.session_state['login'] != True:
     st.title("Still Staring at the restuarant menu??😶")
-    st.image('images/3.webp', width=600)
+    st.image('images/3.webp', width=550)
     st.title("Let us help... will you?")
     
 if  st.session_state['login'] == True:
     tab1, tab2 = st.tabs(["Home", "Explore a Restaurant🔎"])
     with tab1:
         st.title(" Welcome to your.... BITEBUDDY! 🍽️")
+
         eda()
     with tab2:
         st.header("Pick a restaurant!")
@@ -70,12 +73,17 @@ if  st.session_state['login'] == True:
         selected_restaurant = st.selectbox("Select a restaurant:", restaurant_names)
 
         if st.button("Get Dish Recommendations"):
-            # Get the restaurant ID from Snowflake
-            df = get_reviews(selected_restaurant)
+
+            df,display_text = get_reviews(selected_restaurant)
+            snowflake_df = get_snowflake_data()
             st.header("Hmm, here's what people say.....")
             st.write(df)
             st.subheader("User Comments:")
-            for index, row in df.iterrows():
-                st.write(row['Reviews'])
+            st.text_area(label="",value=display_text, height=200)
+            # for index, row in df.iterrows():
+            #     st.write(row['Reviews'])
+            st.write("---")
+            st.header("Well, here's what BITEBUDDY says.....")
+            st.write(snowflake_df)
 
 # dummy comment
