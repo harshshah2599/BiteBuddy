@@ -13,13 +13,21 @@ def eda():
     num_restaurants = len(df['BUSINESS_NAME'].unique())
     num_reviews = len(df)
 
-    # Average Ratings
+    # # Average Ratings
+    # avg_ratings = df.groupby('BUSINESS_NAME')['RATING'].mean()
+
+    # Calculate average ratings
     avg_ratings = df.groupby('BUSINESS_NAME')['RATING'].mean()
+    avg_ratings_df = avg_ratings.reset_index()
+    avg_ratings_df.columns = ['Name', 'Rating']  # Renaming columns
+
     highest_avg_rating = avg_ratings.idxmax()
     lowest_avg_rating = avg_ratings.idxmin()
 
     # Most Popular Restaurants
     popular_restaurants = df['BUSINESS_NAME'].value_counts()
+    popular_restaurants_df = popular_restaurants.reset_index()
+    popular_restaurants_df.columns = ['Name', 'Reviews']  # Renaming columns
     most_reviews = popular_restaurants.idxmax()
     highest_ratings = df.groupby('BUSINESS_NAME')['RATING'].mean().idxmax()
 
@@ -48,15 +56,23 @@ def eda():
     st.subheader(f"Bookline has about {num_restaurants} restaurants!!🤯")
     st.subheader(f"We've got {num_reviews} user reviews to help you choose your next fav meal!😎 ")
 
-    st.subheader('Wanna go by rating?')
-    st.write(f"Highest rated place : {highest_avg_rating}")
-    st.write(f"Lowest rated place : {lowest_avg_rating}")
-    st.write(avg_ratings)
+    # Creating two columns for side-by-side display
+    col1, col2 = st.columns(2)
 
-    st.subheader("Don't wanna miss the Popular ones!!")
-    st.write(f"Restaurant with the Most Reviews : {most_reviews}")
-    st.write(f"Restaurant with the Highest Ratings : {highest_ratings}")
-    st.write(popular_restaurants)
+    # Column 1: Ratings Information
+    with col1:
+        st.subheader('Wanna go by rating?')
+        st.write(f"Highest rated place : {highest_avg_rating}")
+        st.write(f"Lowest rated place : {lowest_avg_rating}")
+        st.write(avg_ratings_df)
+
+    # Column 2: Popular Restaurants Information
+    with col2:
+        st.subheader("Don't wanna miss the Popular ones!!")
+        st.write(f"Restaurant with the Most Reviews : {most_reviews}")
+        st.write(f"Restaurant with the Highest Ratings : {highest_ratings}")
+        st.write(popular_restaurants_df)
+
 
     # st.subheader('User Analysis')
     # st.write("User Review Counts:")
