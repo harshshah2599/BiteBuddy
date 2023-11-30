@@ -17,7 +17,7 @@ def eda():
     # avg_ratings = df.groupby('BUSINESS_NAME')['RATING'].mean()
 
     # Calculate average ratings
-    avg_ratings = df.groupby('BUSINESS_NAME')['RATING'].mean()
+    avg_ratings = df.groupby('BUSINESS_NAME')['RATING'].mean().sort_values(ascending=False).head(25)
     avg_ratings_df = avg_ratings.reset_index()
     avg_ratings_df.columns = ['Name', 'Rating']  # Renaming columns
 
@@ -25,7 +25,7 @@ def eda():
     lowest_avg_rating = avg_ratings.idxmin()
 
     # Most Popular Restaurants
-    popular_restaurants = df['BUSINESS_NAME'].value_counts()
+    popular_restaurants = df['BUSINESS_NAME'].value_counts().head(25)
     popular_restaurants_df = popular_restaurants.reset_index()
     popular_restaurants_df.columns = ['Name', 'Reviews']  # Renaming columns
     most_reviews = popular_restaurants.idxmax()
@@ -53,7 +53,7 @@ def eda():
     st.title('We know you are in Brookline and Hungry!👀🙂')
 
     # st.subheader('Count of Restaurants and User Reviews')
-    st.subheader(f"Bookline has about {num_restaurants} restaurants!!🤯")
+    st.subheader(f"Brookline has about {num_restaurants} restaurants!!🤯")
     st.subheader(f"We've got {num_reviews} user reviews to help you choose your next fav meal!😎 ")
 
     # Creating two columns for side-by-side display
