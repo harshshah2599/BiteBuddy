@@ -6,7 +6,7 @@ sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
 from main import get_reviews, get_map
 from eda import eda
-from snowflake_data import get_snowflake_data
+from snowflake_data import get_reviews_summary
 
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
@@ -60,9 +60,9 @@ if  st.session_state['login'] != True:
     st.title("Let us help... will you?")
     
 if  st.session_state['login'] == True:
-    tab1, tab2 = st.tabs(["Home", "Explore a Restaurant🔎"])
+    tab1, tab2, tab3 = st.tabs(["Home", "Explore a Restaurant🔎" , "Bitebuddy Documentation"])
     with tab1:
-        st.title(" Welcome to your.... BITEBUDDY! 🍽️")
+        st.title("Welcome to your.... BITEBUDDY! 🍽️")
 
         eda()
     with tab2:
@@ -74,16 +74,23 @@ if  st.session_state['login'] == True:
 
         if st.button("Get Dish Recommendations"):
 
-            df,display_text = get_reviews(selected_restaurant)
-            snowflake_df = get_snowflake_data()
+            # df,display_text = get_reviews(selected_restaurant)
+            snowflake_df = get_reviews_summary(selected_restaurant)
             st.header("Hmm, here's what people say.....")
-            st.write(df)
+            # st.write(df)
             st.subheader("User Comments:")
-            st.text_area(label="",value=display_text, height=200)
-            # for index, row in df.iterrows():
-            #     st.write(row['Reviews'])
+            # st.text_area(label="",value=display_text, height=200)
+   
             st.write("---")
             st.header("Well, here's what BITEBUDDY says.....")
             st.write(snowflake_df)
 
+            #####################################################
+            # RLHF:
+            #####################################################
+
+
+    with tab3:
+        st.title("Documentation... Coming Soon!")
+        st.write("Check out our GitHub Repo for more details! Lets put details about the LLM and project here!")
 # dummy comment
