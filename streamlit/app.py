@@ -4,9 +4,9 @@ from utils import get_restaurant_names
 import sys
 sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
-from main import get_reviews, get_map
+from main import get_map #get_reviews
 from eda import eda
-from snowflake_data import get_reviews_summary
+from snowflake_data import get_reviews, get_reviews_summary, recommendation_score
 
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
@@ -60,7 +60,7 @@ if  st.session_state['login'] != True:
     st.title("Let us help... will you?")
     
 if  st.session_state['login'] == True:
-    tab1, tab2, tab3 = st.tabs(["Home", "Explore a Restaurant🔎" , "Bitebuddy Documentation"])
+    tab1, tab2, tab3 = st.tabs(["Home", "Explore a Restaurant🔎" , "Bitebuddy Documentation📃"])
     with tab1:
         st.title("Welcome to your.... BITEBUDDY! 🍽️")
 
@@ -74,16 +74,28 @@ if  st.session_state['login'] == True:
 
         if st.button("Get Dish Recommendations"):
 
-            # df,display_text = get_reviews(selected_restaurant)
             snowflake_df = get_reviews_summary(selected_restaurant)
+            snowflake_df = recommendation_score(snowflake_df)
+            # DATAFRAME CLEANING:
+            snowflake_df.rename(columns={'CLUSTER_LABEL': 'MEAL_NAME'}, inplace=True)
+            snowflake_df = snowflake_df[['BUSINESS_NAME', 'MEAL_NAME', 'RECOMMENDATION_SCORE', 'TOTAL_REVIEWS', 'AVG_REVIEW_RATING', 'AVG_MEAL_SENTIMENT']].sort_values(by='RECOMMENDATION_SCORE', ascending=False)
+            # List of keywords to filter
+            keywords_to_filter = ['food', 'drink', 'restaurant', '', 'price', 'breakfast', 'brunch', 'lunch', 'dinner', 'delicious', 'tasty']
+
+            # Drop rows where 'MEAL_NAME' contains any of the specified keywords
+            snowflake_df = snowflake_df[(~snowflake_df['MEAL_NAME'].str.lower().isin(keywords_to_filter)) & (snowflake_df['TOTAL_REVIEWS'] >= 2)]
+
+
             st.header("Hmm, here's what people say.....")
+            st.subheader("10 Most Recent Reviews:")
+            df, formatted_reviews = get_reviews(selected_restaurant)
             # st.write(df)
-            st.subheader("User Comments:")
-            # st.text_area(label="",value=display_text, height=200)
+            st.text_area(label="",value=formatted_reviews, height=200)
    
             st.write("---")
             st.header("Well, here's what BITEBUDDY says.....")
-            st.write(snowflake_df)
+            # Display the DataFrame without the index
+            st.dataframe(snowflake_df, hide_index=True)
 
             #####################################################
             # RLHF:
