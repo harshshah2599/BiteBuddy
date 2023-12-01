@@ -16,7 +16,7 @@ SNOWFLAKE_ACCOUNT = os.getenv("SNOWFLAKE_ACCOUNT")
 
 ###############################################################################
 # Functions:
-def get_reviews(business_name):
+def get_restaurants():
     # Set up connection parameters
     conn = snowflake.connector.connect(
         user=SNOWFLAKE_USER,
@@ -29,6 +29,34 @@ def get_reviews(business_name):
 
     # Execute a query
     # business_name = 'Rod Dee Thai Cuisine'
+    cursor = conn.cursor()
+    cursor.execute(f"""SELECT distinct business_name
+                        FROM DAMG7374.staging.sample_reviews
+                        order by business_name
+                        """)
+
+    # Fetch data
+    data = cursor.fetchall()
+
+    # Fetch the results as a list
+    restaurant_list = [row[0] for row in data]
+
+    return restaurant_list
+
+
+def get_reviews(business_name):
+    # Set up connection parameters
+    conn = snowflake.connector.connect(
+        user=SNOWFLAKE_USER,
+        password=SNOWFLAKE_PASSWORD,
+        account=SNOWFLAKE_ACCOUNT,
+        warehouse='COMPUTE_WH',
+        database='DAMG7374',
+        # schema='MART'
+    )
+
+    # Execute a query
+    # business_name = 'Anna's Taqueria'
     cursor = conn.cursor()
     cursor.execute(f"""SELECT business_name, review_text
                         FROM DAMG7374.staging.sample_reviews
@@ -49,6 +77,7 @@ def get_reviews(business_name):
     formatted_reviews = "\n".join(["- " + text for text in df['REVIEW_TEXT']])
 
     return df, formatted_reviews
+
 
 def get_reviews_summary(business_name):
     # Set up connection parameters
@@ -104,5 +133,18 @@ def recommendation_score(df):
         (df['AVG_REVIEW_RATING'] / df['AVG_REVIEW_RATING'].max()) * weight_avg_rating +
         (df['AVG_MEAL_SENTIMENT'] / df['AVG_MEAL_SENTIMENT'].max()) * weight_avg_sentiment
     ) * 100
+
+    # Factor the RLHF into the recommendation score
+    def calculate_adjusted_score(row):
+        if pd.notna(row['TOTAL_POS_FEEDBACK']):
+            adjustment_factor = 1 + (row['TOTAL_POS_FEEDBACK'] * 0.1) - (row['TOTAL_NEG_FEEDBACK'] * 0.1) # 10% increase for each positive feedback, 10% decrease for each negative feedback
+            adjusted_score = adjustment_factor * row['RECOMMENDATION_SCORE']
+            if adjusted_score > 100:
+                return 100
+            return adjusted_score
+        else:
+            return row['RECOMMENDATION_SCORE']
+
+    df['RECOMMENDATION_SCORE'] = df.apply(calculate_adjusted_score, axis=1)
 
     return df

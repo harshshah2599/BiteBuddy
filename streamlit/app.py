@@ -1,12 +1,12 @@
 import streamlit as st
 from auth_user import create_user,login_user
-from utils import get_restaurant_names
+# from utils import get_restaurant_names
 import sys
 sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
 from main import get_map #get_reviews
 from eda import eda
-from snowflake_data import get_reviews, get_reviews_summary, recommendation_score
+from snowflake_data import get_restaurants, get_reviews, get_reviews_summary, recommendation_score
 
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
@@ -69,21 +69,30 @@ if  st.session_state['login'] == True:
         st.header("Pick a restaurant!")
 
         #select box for restaurant names
-        restaurant_names = get_restaurant_names()
-        selected_restaurant = st.selectbox("Select a restaurant:", restaurant_names)
+        restaurant_list = get_restaurants()
+        selected_restaurant = st.selectbox("Select a restaurant:", restaurant_list)
+        # Fixing restaurant name for SQL query
+        selected_restaurant = selected_restaurant.replace("'", "''")
+        # testing
+        # print(f"SELECT business_name, review_text FROM DAMG7374.staging.sample_reviews WHERE BUSINESS_NAME = '{selected_restaurant}' LIMIT 10")
 
         if st.button("Get Dish Recommendations"):
 
             snowflake_df = get_reviews_summary(selected_restaurant)
             snowflake_df = recommendation_score(snowflake_df)
-            # DATAFRAME CLEANING:
-            snowflake_df.rename(columns={'CLUSTER_LABEL': 'MEAL_NAME'}, inplace=True)
-            snowflake_df = snowflake_df[['BUSINESS_NAME', 'MEAL_NAME', 'RECOMMENDATION_SCORE', 'TOTAL_REVIEWS', 'AVG_REVIEW_RATING', 'AVG_MEAL_SENTIMENT']].sort_values(by='RECOMMENDATION_SCORE', ascending=False)
-            # List of keywords to filter
-            keywords_to_filter = ['food', 'drink', 'restaurant', '', 'price', 'breakfast', 'brunch', 'lunch', 'dinner', 'delicious', 'tasty']
+            # Testing
+            # st.write(snowflake_df)
 
-            # Drop rows where 'MEAL_NAME' contains any of the specified keywords
-            snowflake_df = snowflake_df[(~snowflake_df['MEAL_NAME'].str.lower().isin(keywords_to_filter)) & (snowflake_df['TOTAL_REVIEWS'] >= 2)]
+            # DATAFRAME CLEANING:
+            # snowflake_df.rename(columns={'CLUSTER_LABEL': 'MEAL_NAME'}, inplace=True)
+            snowflake_df = snowflake_df[['BUSINESS_NAME', 'MEAL_NAME', 'RECOMMENDATION_SCORE', 'TOTAL_REVIEWS', 'AVG_REVIEW_RATING', 'AVG_MEAL_SENTIMENT']].sort_values(by='RECOMMENDATION_SCORE', ascending=False)
+            # List of keywords to filter out
+            keywords_to_filter = ['food', 'drink', 'restaurant', '', 'price', 'breakfast', 'brunch', 'lunch', 'dinner', 'delicious', 'tasty', 'service', 'atmosphere']
+
+            # Drop rows where 'MEAL_NAME' contains any of the specified keywords and 'TOTAL_REVIEWS' is less than 2 and 'MEAL_NAME' contains 'food'
+            snowflake_df = snowflake_df[(~snowflake_df['MEAL_NAME'].str.lower().isin(keywords_to_filter)) & 
+                                        (snowflake_df['TOTAL_REVIEWS'] >= 2) & 
+                                        (~snowflake_df['MEAL_NAME'].str.contains('food', case=False))]
 
 
             st.header("Hmm, here's what people say.....")
