@@ -101,7 +101,7 @@ ctx = snowflake.connector.connect(
     password=SNOWFLAKE_PASSWORD,
     account=SNOWFLAKE_ACCOUNT,
     role = 'sysadmin',
-    warehouse="compute_wh",
+    warehouse="STREAMLIT_WH",
     database="damg7374",
     schema="raw"
     )

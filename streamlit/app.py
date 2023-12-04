@@ -6,7 +6,7 @@ sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
 from main import get_map #get_reviews
 from eda import eda
-from snowflake_data import get_restaurants, get_reviews, get_reviews_summary, recommendation_score
+from snowflake_data import get_restaurants, get_reviews, get_reviews_summary, recommendation_score, get_feedback_summary
 
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
@@ -60,7 +60,7 @@ if  st.session_state['login'] != True:
     st.title("Let us help... will you?")
     
 if  st.session_state['login'] == True:
-    tab1, tab2, tab3 = st.tabs(["Home", "Explore a Restaurant🔎" , "Bitebuddy Documentation📃"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Home", "Explore a Restaurant🔎" , "Bitebuddy Documentation📃", "Monitoring📊"])
     with tab1:
         st.title("Welcome to your.... BITEBUDDY! 🍽️")
 
@@ -111,7 +111,39 @@ if  st.session_state['login'] == True:
             #####################################################
 
 
+            #####################################################
+            # Dietary Restrictions:
+            #####################################################
+            st.write('Model: The AI model isn''t perfect, so make sure to double check the dietary restrictions output before consuming the meal!')
+
     with tab3:
         st.title("Documentation... Coming Soon!")
         st.write("Check out our GitHub Repo for more details! Lets put details about the LLM and project here!")
-# dummy comment
+        # dummy comment
+
+
+    with tab4:
+        # Only have access to this tab if logged in as admin else redirect to home page
+        st.title("Monitoring... Coming Soon!")
+        st.write("Admin Monitoring Reports will be displayed here!")
+
+        df = get_feedback_summary()
+        st.subheader("Feedback Details:")
+        st.write(df)
+
+        st.title("Feedback Over Time")
+
+        # Bar chart
+        st.bar_chart(df.set_index('CREATE_DATE')[['TOTAL_POS_FEEDBACK', 'TOTAL_NEG_FEEDBACK']])
+
+
+        st.subheader("Feedback Summary:")
+        # st.write(df.columns)
+        # List of columns for which you want to calculate the sum
+        columns_to_sum = ["TOTAL_RESTAURANTS_FEEDBACK", "TOTAL_MEALS_FEEDBACK", "TOTAL_FEEDBACK", "TOTAL_POS_FEEDBACK", "TOTAL_NEG_FEEDBACK"]
+
+        # Calculate the sum of selected columns and create a new row in the DataFrame
+        sum_row = df[columns_to_sum].sum().to_frame().T
+        sum_row['POSITIVE_FEEDBACK_PERC'] = round(sum_row['TOTAL_POS_FEEDBACK'] / sum_row['TOTAL_FEEDBACK'] * 100, 1)
+        st.write(sum_row)
+        # st.write(sum_df)

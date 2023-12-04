@@ -22,7 +22,7 @@ def get_restaurants():
         user=SNOWFLAKE_USER,
         password=SNOWFLAKE_PASSWORD,
         account=SNOWFLAKE_ACCOUNT,
-        warehouse='COMPUTE_WH',
+        warehouse='STREAMLIT_WH',
         database='DAMG7374',
         # schema='MART'
     )
@@ -50,7 +50,7 @@ def get_reviews(business_name):
         user=SNOWFLAKE_USER,
         password=SNOWFLAKE_PASSWORD,
         account=SNOWFLAKE_ACCOUNT,
-        warehouse='COMPUTE_WH',
+        warehouse='STREAMLIT_WH',
         database='DAMG7374',
         # schema='MART'
     )
@@ -85,7 +85,7 @@ def get_reviews_summary(business_name):
         user=SNOWFLAKE_USER,
         password=SNOWFLAKE_PASSWORD,
         account=SNOWFLAKE_ACCOUNT,
-        warehouse='COMPUTE_WH',
+        warehouse='STREAMLIT_WH',
         database='DAMG7374',
         schema='MART'
     )
@@ -146,5 +146,43 @@ def recommendation_score(df):
             return row['RECOMMENDATION_SCORE']
 
     df['RECOMMENDATION_SCORE'] = df.apply(calculate_adjusted_score, axis=1)
+
+    return df
+
+
+
+
+def get_feedback_summary():
+    # Set up connection parameters
+    conn = snowflake.connector.connect(
+        user=SNOWFLAKE_USER,
+        password=SNOWFLAKE_PASSWORD,
+        account=SNOWFLAKE_ACCOUNT,
+        warehouse='STREAMLIT_WH',
+        database='DAMG7374',
+        schema='MART'
+    )
+
+    # Execute a query
+    # business_name = 'Rod Dee Thai Cuisine'
+    cursor = conn.cursor()
+    cursor.execute(f"""select create_date,
+        count(distinct business_name) total_restaurants_feedback,
+        count(distinct meal_name) total_meals_feedback,
+        count(*) total_feedback,
+        sum(case when rec_flag then 1 else 0 end) total_pos_feedback,
+        sum(case when rec_flag = FALSE then 1 else 0 end) total_neg_feedback,
+        round((total_pos_feedback / total_feedback)*100, 1) as positive_feedback_perc
+from damg7374.mart.bitebuddy_rlhf
+group by create_date""")
+
+    # Fetch data
+    data = cursor.fetchall()
+
+    # # Display fetched data in Streamlit
+    # st.write(data)
+
+    # Convert fetched data to a DataFrame
+    df = pd.DataFrame(data, columns=[desc[0] for desc in cursor.description])
 
     return df
