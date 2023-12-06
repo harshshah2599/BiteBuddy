@@ -6,7 +6,8 @@ sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
 from main import get_map #get_reviews
 from eda import eda
-from snowflake_data import get_restaurants, get_reviews, get_reviews_summary, recommendation_score, get_feedback_summary
+from snowflake_data import *
+import plotly.express as px
 
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
@@ -105,6 +106,7 @@ if  st.session_state['login'] == True:
             st.header("Well, here's what BITEBUDDY says.....")
             # Display the DataFrame without the index
             st.dataframe(snowflake_df, hide_index=True)
+            st.divider()
 
             #####################################################
             # RLHF:
@@ -114,7 +116,7 @@ if  st.session_state['login'] == True:
             #####################################################
             # Dietary Restrictions:
             #####################################################
-            st.write('Model: The AI model isn''t perfect, so make sure to double check the dietary restrictions output before consuming the meal!')
+            st.info('Model: The AI model isn''t perfect, so make sure to double check the dietary restrictions output before consuming the meal!', icon="⚠️")
 
     with tab3:
         st.title("Documentation... Coming Soon!")
@@ -127,6 +129,9 @@ if  st.session_state['login'] == True:
         st.title("Monitoring... Coming Soon!")
         st.write("Admin Monitoring Reports will be displayed here!")
 
+        #####################################################
+        # Feedback Monitoring:
+        #####################################################
         df = get_feedback_summary()
         st.subheader("Feedback Details:")
         st.write(df)
@@ -135,7 +140,6 @@ if  st.session_state['login'] == True:
 
         # Bar chart
         st.bar_chart(df.set_index('CREATE_DATE')[['TOTAL_POS_FEEDBACK', 'TOTAL_NEG_FEEDBACK']])
-
 
         st.subheader("Feedback Summary:")
         # st.write(df.columns)
@@ -147,3 +151,40 @@ if  st.session_state['login'] == True:
         sum_row['POSITIVE_FEEDBACK_PERC'] = round(sum_row['TOTAL_POS_FEEDBACK'] / sum_row['TOTAL_FEEDBACK'] * 100, 1)
         st.write(sum_row)
         # st.write(sum_df)
+        st.divider()
+
+
+        #####################################################
+        # Snowflake Usage Monitoring:
+        #####################################################
+        st.subheader("Snowflake Usage Overview:")
+        st.info("For more details see the Streamlit app in Snowflake - https://app.snowflake.com/pjpbfql/knb43715/#/streamlit-apps/DAMG7374.PUBLIC.NENLD3FVOT0GSA9I?ref=snowsight_shared!", icon="ℹ️")
+        st.divider()
+
+        #############################################
+        #     Credit Usage Total (Bar Chart)
+        #############################################
+        #Credits Usage (Total)
+        total_credits_used_df = get_credit_usage()
+
+        #Chart
+        fig_credits_used=px.bar(total_credits_used_df,x='TOTAL_CREDITS_USED',y='WAREHOUSE_NAME',orientation='h',title="Credits Used by Warehouse")
+        fig_credits_used.update_traces(marker_color='green')
+        st.plotly_chart(fig_credits_used)
+
+        #############################################
+        #     Credits Billed by Month
+        #############################################
+        credits_billed_df = get_credit_usage_month()
+        #st.write(credits_billed_df)
+        fig_credits_billed=px.bar(credits_billed_df,x='USAGE_MONTH',y='SUM(CREDITS_BILLED)', orientation='v',title="Credits Billed by Month")
+        st.plotly_chart(fig_credits_billed, use_container_width=True)
+
+        #############################################
+        #     Credits Used Overtime
+        #############################################
+        #Credits Used Overtime
+        credits_used_overtime_df = get_credit_usage_over_time()
+        #chart
+        fig_credits_used_overtime_df=px.bar(credits_used_overtime_df,x='USAGE_DATE',y='TOTAL_CREDITS_USED',color='WAREHOUSE_NAME',orientation='v',title="Credits Used Overtime")
+        st.plotly_chart(fig_credits_used_overtime_df, use_container_width=True)
