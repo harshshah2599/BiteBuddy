@@ -1,4 +1,4 @@
-import snowflake.connector
+from snowflake_conn import snowflake_conn
 import streamlit as st
 import pandas as pd
 import os
@@ -15,18 +15,11 @@ SNOWFLAKE_ACCOUNT = os.getenv("SNOWFLAKE_ACCOUNT")
 # print(SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_ACCOUNT)
 
 ###############################################################################
+# Snowflake Connection:
 # Functions:
 def get_restaurants():
     # Set up connection parameters
-    conn = snowflake.connector.connect(
-        user=SNOWFLAKE_USER,
-        password=SNOWFLAKE_PASSWORD,
-        account=SNOWFLAKE_ACCOUNT,
-        warehouse='STREAMLIT_WH',
-        database='DAMG7374',
-        # schema='MART'
-    )
-
+    conn = snowflake_conn()
     # Execute a query
     # business_name = 'Rod Dee Thai Cuisine'
     cursor = conn.cursor()
@@ -46,14 +39,7 @@ def get_restaurants():
 
 def get_reviews(business_name):
     # Set up connection parameters
-    conn = snowflake.connector.connect(
-        user=SNOWFLAKE_USER,
-        password=SNOWFLAKE_PASSWORD,
-        account=SNOWFLAKE_ACCOUNT,
-        warehouse='STREAMLIT_WH',
-        database='DAMG7374',
-        # schema='MART'
-    )
+    conn = snowflake_conn()
 
     # Execute a query
     # business_name = 'Anna's Taqueria'
@@ -81,14 +67,7 @@ def get_reviews(business_name):
 
 def get_reviews_summary(business_name):
     # Set up connection parameters
-    conn = snowflake.connector.connect(
-        user=SNOWFLAKE_USER,
-        password=SNOWFLAKE_PASSWORD,
-        account=SNOWFLAKE_ACCOUNT,
-        warehouse='STREAMLIT_WH',
-        database='DAMG7374',
-        schema='MART'
-    )
+    conn = snowflake_conn()
 
     # Execute a query
     # business_name = 'Rod Dee Thai Cuisine'
@@ -154,14 +133,7 @@ def recommendation_score(df):
 
 def get_feedback_summary():
     # Set up connection parameters
-    conn = snowflake.connector.connect(
-        user=SNOWFLAKE_USER,
-        password=SNOWFLAKE_PASSWORD,
-        account=SNOWFLAKE_ACCOUNT,
-        warehouse='STREAMLIT_WH',
-        database='DAMG7374',
-        schema='MART'
-    )
+    conn = snowflake_conn()
 
     # Execute a query
     # business_name = 'Rod Dee Thai Cuisine'
@@ -174,13 +146,71 @@ def get_feedback_summary():
         sum(case when rec_flag = FALSE then 1 else 0 end) total_neg_feedback,
         round((total_pos_feedback / total_feedback)*100, 1) as positive_feedback_perc
 from damg7374.mart.bitebuddy_rlhf
-group by create_date""")
+group by create_date
+order by create_date desc""")
 
     # Fetch data
     data = cursor.fetchall()
 
     # # Display fetched data in Streamlit
     # st.write(data)
+
+    # Convert fetched data to a DataFrame
+    df = pd.DataFrame(data, columns=[desc[0] for desc in cursor.description])
+
+    return df
+
+
+
+def get_credit_usage():
+    # Set up connection parameters
+    conn = snowflake_conn()
+
+    # Execute a query
+    cursor = conn.cursor()
+    cursor.execute(f"""select warehouse_name,sum(credits_used) as total_credits_used 
+from snowflake.account_usage.warehouse_metering_history 
+where warehouse_name in ('COMPUTE_WH', 'DBT_WH', 'STREAMLIT_WH') 
+group by 1 
+order by 2 desc limit 10""")
+
+    # Fetch data
+    data = cursor.fetchall()
+
+    # Convert fetched data to a DataFrame
+    df = pd.DataFrame(data, columns=[desc[0] for desc in cursor.description])
+
+    return df
+
+
+
+def get_credit_usage_month():
+    # Set up connection parameters
+    conn = snowflake_conn()
+
+    # Execute a query
+    cursor = conn.cursor()
+    cursor.execute(f"""select date_trunc('MONTH', usage_date) as Usage_Month, sum(CREDITS_BILLED) from snowflake.account_usage.metering_daily_history group by Usage_Month""")
+
+    # Fetch data
+    data = cursor.fetchall()
+
+    # Convert fetched data to a DataFrame
+    df = pd.DataFrame(data, columns=[desc[0] for desc in cursor.description])
+
+    return df
+
+
+def get_credit_usage_over_time():
+    # Set up connection parameters
+    conn = snowflake_conn()
+
+    # Execute a query
+    cursor = conn.cursor()
+    cursor.execute(f"""select start_time::date as usage_date, warehouse_name, sum(credits_used) as total_credits_used from snowflake.account_usage.warehouse_metering_history where warehouse_name in ('COMPUTE_WH', 'DBT_WH', 'STREAMLIT_WH') group by 1,2 order by 2,1""")
+
+    # Fetch data
+    data = cursor.fetchall()
 
     # Convert fetched data to a DataFrame
     df = pd.DataFrame(data, columns=[desc[0] for desc in cursor.description])
