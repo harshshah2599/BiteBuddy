@@ -79,6 +79,7 @@ if  st.session_state['login'] == True:
 
         if st.button("Get Dish Recommendations"):
 
+            st.toast('Warming up BiteBuddy...')
             snowflake_df = get_reviews_summary(selected_restaurant)
             snowflake_df = recommendation_score(snowflake_df)
             # Testing

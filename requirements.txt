@@ -94,3 +94,5 @@ wordcloud==1.9.2
 xxhash @ file:///C:/ci_311/python-xxhash_1676446168786/work
 yarl @ file:///C:/ci_311/yarl_1676432870023/work
 zipp @ file:///C:/ci_311/zipp_1676426100491/work
+geopy==2.4.1
+streamlit_extras==0.3.5
