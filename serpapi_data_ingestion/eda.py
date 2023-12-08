@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud
 import folium
+from streamlit_extras.let_it_rain import rain
+from geopy.geocoders import Nominatim
+from streamlit_folium import folium_static  # Import folium_static from streamlit_folium
+
+
 
 def eda():
     # Load the data
@@ -37,24 +42,64 @@ def eda():
 
     # Word Cloud for Reviews
     text = ' '.join(df['REVIEW_TEXT'].dropna().tolist())
-    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+    # wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+    wordcloud = WordCloud(
+    width=700,
+    height=350,
+    background_color='lightgrey',
+    colormap='viridis',  # Color map
+    # contour_color='steelblue',  # Outline color
+    # contour_width=1,  # Outline width
+    contour_color=None,
+    max_words=100,  # Maximum number of words
+    stopwords=None  # List of stopwords to exclude (if needed)
+    ).generate(text)
 
-    # # Geospatial Analysis
-    # map_data = df[['BUSINESS_NAME', 'GMAP_ID']]
-    # location_map = folium.Map(location=[42.3317, -71.1218], zoom_start=13)
-
-    # for i in range(len(map_data)):
-    #     name = map_data.iloc[i]['BUSINESS_NAME']
-    #     gmap_id = map_data.iloc[i]['GMAP_ID']
-    #     tooltip = f"{name}"
-    #     folium.Marker(location=gmap_id, popup=name, tooltip=tooltip).add_to(location_map)
 
     # Display on Streamlit
     st.title('We know you are in Brookline and Hungry!👀🙂')
 
+    ##### GEOSPATIAL ANALYSIS ######
+
+
+
+    # Get the top 10 most popular restaurants
+    popular_restaurants_to_map = df['BUSINESS_NAME'].value_counts().head(10)
+
+    # Create a map
+    location_map = folium.Map(location=[42.3317, -71.1218], zoom_start=13)
+    geolocator = Nominatim(user_agent="restaurant_locator")
+
+    # Focus on Brookline
+    city = 'Brookline'
+
+    for restaurant_name, count in popular_restaurants_to_map.items():
+        location = geolocator.geocode(f"{restaurant_name}, {city}")
+        if location:
+            lat, lon = location.latitude, location.longitude
+            tooltip = f"{restaurant_name}: {count} reviews"
+            folium.Marker(location=[lat, lon], popup=restaurant_name, tooltip=tooltip).add_to(location_map)
+
+    #Display the map using folium_static in Streamlit
+    folium_static(location_map)
+
+
+
     # st.subheader('Count of Restaurants and User Reviews')
-    st.subheader(f"Brookline has about {num_restaurants} restaurants!!🤯")
-    st.subheader(f"We've got {num_reviews} user reviews to help you choose your next fav meal!😎 ")
+    st.info(f"Brookline has about {num_restaurants} restaurants!!🤯")
+    st.info(f"We've got {num_reviews} user reviews to help you choose your next fav meal!😎 ")
+
+
+    # Raining Emojis.
+        
+    rain(
+    emoji= "🍕", # Assorted emojis
+    font_size=25,
+    falling_speed=3,
+    animation_length=3  # Emojis will rain for 10 seconds
+    )
+
+
 
     # Creating two columns for side-by-side display
     col1, col2 = st.columns(2)
