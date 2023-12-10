@@ -47,7 +47,7 @@ def eda():
     width=700,
     height=350,
     background_color='lightgrey',
-    colormap='viridis',  # Color map
+    colormap='cividis',  # Color map
     # contour_color='steelblue',  # Outline color
     # contour_width=1,  # Outline width
     contour_color=None,
@@ -127,7 +127,7 @@ def eda():
 
     st.subheader("What's the buzz?")
     st.set_option('deprecation.showPyplotGlobalUse', False)
-    plt.figure(figsize=(10, 5))
+    #plt.figure(figsize=(10, 5))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
     st.pyplot()
