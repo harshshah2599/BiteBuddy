@@ -9,6 +9,8 @@ from eda import eda
 from snowflake_data import *
 import plotly.express as px
 
+#dummy comment
+
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
 with st.sidebar:
