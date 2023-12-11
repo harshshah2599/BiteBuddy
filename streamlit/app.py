@@ -1,6 +1,6 @@
 import streamlit as st
 from auth_user import create_user,login_user
-# from utils import get_restaurant_names
+# from utils import get_diet_answers
 import sys
 sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
@@ -8,6 +8,22 @@ from main import get_map #get_reviews
 from eda import eda
 from snowflake_data import *
 import plotly.express as px
+from bardapi import BardCookies
+
+
+load_dotenv('/Users/harsh/GenAI/Bitebuddy/BiteBuddy/.env')
+# Access variables
+token1 = os.getenv("ID")
+token2 = os.getenv("IDTS")
+token3 = os.getenv("IDCC")
+
+cookie_dict = {
+    "__Secure-1PSID": token1,
+    "__Secure-1PSIDTS": token2,
+    "__Secure-1PSIDCC": token3,
+}
+
+bard = BardCookies(cookie_dict=cookie_dict)
 
 #dummy comment
 
@@ -63,7 +79,7 @@ if  st.session_state['login'] != True:
     st.title("Let us help... will you?")
     
 if  st.session_state['login'] == True:
-    tab1, tab2, tab3, tab4 = st.tabs(["Home", "Explore a Restaurant🔎" , "Bitebuddy Documentation📃", "Monitoring📊"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["Home", "Explore a Restaurant🔎" ,"Feedback📝", "Bitebuddy Documentation📃", "Monitoring📊"])
     with tab1:
         st.title("Welcome to your.... BITEBUDDY! 🍽️")
 
@@ -120,14 +136,88 @@ if  st.session_state['login'] == True:
             # Dietary Restrictions:
             #####################################################
             st.info('Model: The AI model isn''t perfect, so make sure to double check the dietary restrictions output before consuming the meal!', icon="⚠️")
+            questions = [
+                "Does this dish contain gluten?",
+                "Are there nuts in this meal?",
+                "Is this dish suitable for vegetarians?",
+                "Is this dish spicy?",
+                # Add more questions here...
+            ]
+            meal_names = snowflake_df[['MEAL_NAME']]
+            # Streamlit app
+            st.subheader("Ask Dietary Questions about Meals")
+
+
+            selected_meal = None
+            selected_question = None
+
+            if selected_meal is None:
+                selected_meal = st.selectbox("Select your recommended meal", meal_names)
+
+            if selected_question is None:
+                selected_question = st.selectbox("Select a dietary question", questions)
+
+            # Check if both selections have been made
+            if selected_meal and selected_question:
+                input_prompt = "I am eating {}. {}".format(selected_meal, selected_question)
+                print("2:", input_prompt)
+                bard_result = bard.get_answer(input_prompt)['content']
+                print(bard_result)
+                st.write(bard_result)
+                    # st.experimental_rerun()
+
+
+            # user_input = st.text_input("Ask a question to our AI bot!")
+
+            # if st.button("Get Answer!"):
+            #     # Check if user input exists and is not empty
+            #     if user_input:
+            #         print(user_input)
+            #         user_bard_result = bard.get_answer(user_input)['content']
+            #         if user_bard_result:
+            #             print(user_bard_result)
+            #             st.write(user_bard_result)
+
 
     with tab3:
+            st.header("Help us help you. We value your Feedback!")
+
+            #select box for restaurant names
+            restaurant_list = get_restaurants()
+            selected_restaurant = st.selectbox("Select a restaurant to provide feedback:", restaurant_list)
+            # Fixing restaurant name for SQL query
+            selected_restaurant = selected_restaurant.replace("'", "''")
+
+            snowflake_df = get_reviews_summary(selected_restaurant)
+            meal_names = snowflake_df[['MEAL_NAME']]
+            selected_meal = st.selectbox("Select the meal you were recommended:", meal_names)
+            
+
+            positive_feedback = None
+
+            if selected_meal:
+                col1, col2 = st.columns(2)
+
+                if col1.button("Yay! I liked the Bitebuddy meal recommendation"):
+                    positive_feedback = 1  # Set positive feedback value to 1
+
+                if col2.button("Nay! I disliked the Bitebuddy meal recommendation"):
+                    positive_feedback = 0  # Set positive feedback value to 0 if negative
+
+                if positive_feedback is not None:
+                    st.success(f"Feedback stored: {'Positive' if positive_feedback else 'Negative'}")
+                    # You can store the feedback value here in a database or use it as needed
+
+
+
+
+    with tab4:
         st.title("Documentation... Coming Soon!")
         st.write("Check out our GitHub Repo for more details! Lets put details about the LLM and project here!")
         # dummy comment
 
 
-    with tab4:
+    with tab5:
         # Only have access to this tab if logged in as admin else redirect to home page
         st.title("Monitoring... Coming Soon!")
         st.write("Admin Monitoring Reports will be displayed here!")
