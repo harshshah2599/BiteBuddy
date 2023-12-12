@@ -1,4 +1,6 @@
 from snowflake_conn import snowflake_conn
+from snowflake.connector.pandas_tools import write_pandas
+import snowflake.connector.errors
 import streamlit as st
 import pandas as pd
 import os
@@ -36,6 +38,30 @@ def get_restaurants():
 
     return restaurant_list
 
+@st.cache_data # cache the function
+def get_all_restaurants():
+    # Set up connection parameters
+    conn = snowflake_conn()
+    # Execute a query
+    # business_name = 'Rod Dee Thai Cuisine'
+    cursor = conn.cursor()
+    cursor.execute(f"""select distinct business_name
+from damg7374.staging.reviews x
+where not exists (select 1
+                    from damg7374.staging.sample_reviews
+                    where x.business_name = business_name)
+order by 1
+                        """)
+
+    # Fetch data
+    data = cursor.fetchall()
+
+    # Fetch the results as a list
+    restaurant_list = [row[0] for row in data]
+
+    return restaurant_list
+
+
 
 def get_reviews(business_name):
     # Set up connection parameters
@@ -65,12 +91,69 @@ def get_reviews(business_name):
     return df, formatted_reviews
 
 
+
+def get_reviews_new(business_name):
+    # Set up connection parameters
+    conn = snowflake_conn()
+
+    # Execute a query
+    # business_name = 'Oliveira''s Steak House'
+    print(f'selected_restaurant - get_reviews_summary: {business_name}')
+    cursor = conn.cursor()
+    cursor.execute(f"""SELECT business_name, rating, review_text
+                        FROM DAMG7374.staging.reviews
+                        WHERE BUSINESS_NAME = '{business_name}'
+                        """)
+
+    # Fetch data
+    data = cursor.fetchall()
+
+    # Convert fetched data to a DataFrame
+    df = pd.DataFrame(data, columns=[desc[0] for desc in cursor.description])
+
+    return df
+
+
+
+def update_reviews(df, snowflake_table_name):
+    # Set up connection parameters
+    conn = snowflake_conn()
+
+    # # SPECIFY THE DATABASE AND SCHEMA
+    # conn.cursor().execute("USE SCHEMA damg7374.mart")
+
+    # try:
+    #     write_pandas(conn, df, snowflake_table_name, method='append')
+    # except snowflake.connector.errors.Error as e:
+    #     print(f"Error: {e}")
+    #     print(f"Error Code: {e.errno}")
+    #     print(f"SQL State: {e.sqlstate}")
+    #     print(f"Error Message: {e.msg}")
+
+    data_tuples = list(df.itertuples(index=False, name=None))
+
+    cursor = conn.cursor()
+    try:
+        for record in data_tuples:
+            sql = (f"INSERT INTO {snowflake_table_name} (BUSINESS_NAME, RATING, MEAL_NAME, SENTIMENT, CLUSTER, CLUSTER_LABEL) VALUES (%s, %s, %s, %s, %s, %s)")
+            cursor.execute(sql, record)
+        conn.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+
+    return df
+
+
+
 def get_reviews_summary(business_name):
     # Set up connection parameters
     conn = snowflake_conn()
 
     # Execute a query
     # business_name = 'Rod Dee Thai Cuisine'
+    print(f'selected_restaurant - get_reviews_summary: {business_name}')
     cursor = conn.cursor()
     cursor.execute(f"""SELECT * 
                         FROM DAMG7374.mart.bitebuddy_recs_fn
