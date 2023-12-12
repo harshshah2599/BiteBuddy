@@ -1,5 +1,5 @@
 
-## BiteBuddy: Make informed dining choices with AI (Meal Recommendation App)
+## BiteBuddy: Make informed dining choices with AI 
 
 **Tired of menu anxiety?** BiteBuddy uses crowdsourced data from multiple sources including Google reviews to **Recommend** the best dishes at any restaurant.
 
