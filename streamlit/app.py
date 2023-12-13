@@ -70,18 +70,40 @@ if  st.session_state['login'] == True:
         eda()
     with tab2:
         st.header("Pick a restaurant!")
+        st.info("BiteBuddy Beta only has restaurants in Massachusetts", icon="ℹ️")
 
-        #select box for restaurant names
-        restaurant_list = get_restaurants()
-        selected_restaurant = st.selectbox("Select a restaurant:", restaurant_list)
-        # Fixing restaurant name for SQL query
-        selected_restaurant = selected_restaurant.replace("'", "''")
+        # Restaurants that have already been processed
+        st.write("Processed Restaurants:")
+        # select box for restaurant names
+        restaurant_list_a = get_restaurants()
+        selected_restaurant_a = st.selectbox("Select a restaurant:", restaurant_list_a, index=None)
+        
         # testing
         # print(f"SELECT business_name, review_text FROM DAMG7374.staging.sample_reviews WHERE BUSINESS_NAME = '{selected_restaurant}' LIMIT 10")
 
-        if st.button("Get Dish Recommendations"):
+        # Restaurants that have already been processed
+        st.write("Search for New Restaurants:")
+        # Get all restaurants
+        restaurant_list_b = get_all_restaurants()
+
+        # Display the multiselect dropdown with filtered items
+        selected_restaurant_b = st.selectbox('Select a restaurant:', restaurant_list_b, index=None)
+
+        # Get the selected restaurant
+        selected_restaurant = selected_restaurant_a if selected_restaurant_a else selected_restaurant_b
+
+        st.info("If the restaurant hasn't previously been processed, the reviews will take some time to be processed", icon="ℹ️")
+        if st.button(f"Get Dish Recommendations for {selected_restaurant}") and selected_restaurant:
+            # Fixing restaurant name for SQL query
+            selected_restaurant = selected_restaurant.replace("'", "''")
+            print(f'selected_restaurant - python: {selected_restaurant}')
 
             st.toast('Warming up BiteBuddy...')
+
+            # If new restaurant, get reviews and process them
+            st.write('TODO: code to get reviews and process them')
+
+
             snowflake_df = get_reviews_summary(selected_restaurant)
             snowflake_df = recommendation_score(snowflake_df)
             # Testing
@@ -102,9 +124,18 @@ if  st.session_state['login'] == True:
             st.header("Hmm, here's what people say.....")
             st.subheader("10 Most Recent Reviews:")
             df, formatted_reviews = get_reviews(selected_restaurant)
+            # If there are no reviews, display a message
+            if df.empty:
+                st.error("Sorry, there are no reviews for this restaurant!")
+                st.stop()
             # st.write(df)
             st.text_area(label="",value=formatted_reviews, height=200)
-   
+
+            # If there are no recommendations, display a message
+            if snowflake_df.empty:
+                st.error("Sorry, BiteBuddy couldn't find any recommendations for this restaurant!")
+                st.stop()
+
             st.write("---")
             st.header("Well, here's what BITEBUDDY says.....")
             # Display the DataFrame without the index
@@ -122,6 +153,8 @@ if  st.session_state['login'] == True:
             #####################################################
             st.info('Model: The AI model isn''t perfect, so make sure to double check the dietary restrictions output before consuming the meal!', icon="⚠️")
 
+        else:
+            st.warning("Please select a restaurant first")
     with tab3:
         st.header("**BiteBuddy**")
         st.markdown('''A personal dish recommendation app that leverages AI to help you make your choice.''')
