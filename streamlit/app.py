@@ -1,13 +1,13 @@
 import streamlit as st
 from auth_user import create_user,login_user
-# from utils import get_restaurant_names
+from utils import get_restaurant_names
 import sys
 sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
 from main import get_map #get_reviews
 from eda import eda
 from snowflake_data import *
-import plotly.express as px
+import plotly.express as px 
 
 #dummy comment
 
@@ -58,9 +58,9 @@ with st.sidebar:
                     st.error("Email already exists! Sign in to continue...")
 
 if  st.session_state['login'] != True:
-    st.title("Still Staring at the restuarant menu??😶")
+    st.header("Still Staring at the Restuarant menu??😶")
     st.image('images/3.webp', width=550)
-    st.title("Let us help... will you?")
+    st.header("Let us help... will you?")
     
 if  st.session_state['login'] == True:
     tab1, tab2, tab3, tab4 = st.tabs(["Home", "Explore a Restaurant🔎" , "Bitebuddy Documentation📃", "Monitoring📊"])
@@ -109,7 +109,8 @@ if  st.session_state['login'] == True:
             st.header("Well, here's what BITEBUDDY says.....")
             # Display the DataFrame without the index
             st.dataframe(snowflake_df, hide_index=True)
-            st.divider()
+            #st.divider()
+            st.write("---")
 
             #####################################################
             # RLHF:
@@ -122,8 +123,31 @@ if  st.session_state['login'] == True:
             st.info('Model: The AI model isn''t perfect, so make sure to double check the dietary restrictions output before consuming the meal!', icon="⚠️")
 
     with tab3:
-        st.title("Documentation... Coming Soon!")
-        st.write("Check out our GitHub Repo for more details! Lets put details about the LLM and project here!")
+        st.header("**BiteBuddy**")
+        st.markdown('''A personal dish recommendation app that leverages AI to help you make your choice.''')
+        
+        st.markdown(''' **How to use the App** : It's  just a click away!''')
+        st.markdown(" 1. Go to Explore Restaurant")
+        st.markdown(" 2. Select the restaurant you are at")
+        st.markdown(" 3. Hit the Get Recommendation tab")
+        st.text("Voila!!! You have a list of best dishes at your disposal!")
+
+
+        
+        st.subheader("**Documentation**")
+        st.markdown("- [Presentation]()")
+        st.markdown("- [Project Report](http://google.com.au/)")
+        st.markdown("- [Progress Report](https://docs.google.com/presentation/d/17kCFljf3qQ_N1jVAuPRQN1Kkjuj9VNN2pcAsQIeOGnE/edit#slide=id.g28262b8e96a_2_275)")
+        st.markdown("- [Git Repo](https://github.com/LLM-App-DataEng-Group2/BiteBuddy.git)")
+        
+        
+        st.subheader("**Data and Technologies**")
+        st.image('images/image.png', width=400)
+        st.image('images/llm.png', width=400) 
+
+
+        
+
         # dummy comment
 
 
@@ -154,7 +178,7 @@ if  st.session_state['login'] == True:
         sum_row['POSITIVE_FEEDBACK_PERC'] = round(sum_row['TOTAL_POS_FEEDBACK'] / sum_row['TOTAL_FEEDBACK'] * 100, 1)
         st.write(sum_row)
         # st.write(sum_df)
-        st.divider()
+        st.write("---")
 
 
         #####################################################
@@ -162,7 +186,7 @@ if  st.session_state['login'] == True:
         #####################################################
         st.subheader("Snowflake Usage Overview:")
         st.info("For more details see the Streamlit app in Snowflake - https://app.snowflake.com/pjpbfql/knb43715/#/streamlit-apps/DAMG7374.PUBLIC.NENLD3FVOT0GSA9I?ref=snowsight_shared!", icon="ℹ️")
-        st.divider()
+        st.write("---")
 
         #############################################
         #     Credit Usage Total (Bar Chart)
