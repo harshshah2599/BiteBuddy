@@ -74,9 +74,9 @@ with st.sidebar:
                     st.error("Email already exists! Sign in to continue...")
 
 if  st.session_state['login'] != True:
-    st.title("Still Staring at the restuarant menu??😶")
+    st.header("Still Staring at the Restuarant menu??😶")
     st.image('images/3.webp', width=550)
-    st.title("Let us help... will you?")
+    st.header("Let us help... will you?")
     
 if  st.session_state['login'] == True:
     st.toast("Warming up BiteBuddy...")
@@ -87,18 +87,40 @@ if  st.session_state['login'] == True:
         eda()
     with tab2:
         st.header("Pick a restaurant!")
+        st.info("BiteBuddy Beta only has restaurants in Massachusetts", icon="ℹ️")
 
-        #select box for restaurant names
-        restaurant_list = get_restaurants()
-        selected_restaurant = st.selectbox("Select a restaurant:", restaurant_list)
-        # Fixing restaurant name for SQL query
-        selected_restaurant = selected_restaurant.replace("'", "''")
+        # Restaurants that have already been processed
+        st.write("Processed Restaurants:")
+        # select box for restaurant names
+        restaurant_list_a = get_restaurants()
+        selected_restaurant_a = st.selectbox("Select a restaurant:", restaurant_list_a, index=None)
+        
         # testing
         # print(f"SELECT business_name, review_text FROM DAMG7374.staging.sample_reviews WHERE BUSINESS_NAME = '{selected_restaurant}' LIMIT 10")
 
-        if st.button("Get Dish Recommendations"):
+        # Restaurants that have already been processed
+        st.write("Search for New Restaurants:")
+        # Get all restaurants
+        restaurant_list_b = get_all_restaurants()
+
+        # Display the multiselect dropdown with filtered items
+        selected_restaurant_b = st.selectbox('Select a restaurant:', restaurant_list_b, index=None)
+
+        # Get the selected restaurant
+        selected_restaurant = selected_restaurant_a if selected_restaurant_a else selected_restaurant_b
+
+        st.info("If the restaurant hasn't previously been processed, the reviews will take some time to be processed", icon="ℹ️")
+        if st.button(f"Get Dish Recommendations for {selected_restaurant}") and selected_restaurant:
+            # Fixing restaurant name for SQL query
+            selected_restaurant = selected_restaurant.replace("'", "''")
+            print(f'selected_restaurant - python: {selected_restaurant}')
 
             st.toast('Warming up BiteBuddy...')
+
+            # If new restaurant, get reviews and process them
+            st.write('TODO: code to get reviews and process them')
+
+
             snowflake_df = get_reviews_summary(selected_restaurant)
             snowflake_df = recommendation_score(snowflake_df)
             # Testing
@@ -119,9 +141,18 @@ if  st.session_state['login'] == True:
             st.header("Hmm, here's what people say.....")
             st.subheader("10 Most Recent Reviews:")
             df, formatted_reviews = get_reviews(selected_restaurant)
+            # If there are no reviews, display a message
+            if df.empty:
+                st.error("Sorry, there are no reviews for this restaurant!")
+                st.stop()
             # st.write(df)
             st.text_area(label="",value=formatted_reviews, height=200)
-   
+
+            # If there are no recommendations, display a message
+            if snowflake_df.empty:
+                st.error("Sorry, BiteBuddy couldn't find any recommendations for this restaurant!")
+                st.stop()
+
             st.write("---")
             st.header("Well, here's what BITEBUDDY says.....")
             # Display the DataFrame without the index
@@ -138,51 +169,9 @@ if  st.session_state['login'] == True:
             # Dietary Restrictions:
             #####################################################
             st.info('Model: The AI model isn''t perfect, so make sure to double check the dietary restrictions output before consuming the meal!', icon="⚠️")
-            questions = [
-                "Does this dish contain gluten?",
-                "Are there nuts in this meal?",
-                "Is this dish suitable for vegetarians?",
-                "Is this dish spicy?",
-                # Add more questions here...
-            ]
-            meal_names = snowflake_df[['MEAL_NAME']]
-            # Streamlit app
-            st.subheader("Ask Dietary Questions about Meals")
 
-
-            selected_meal = None
-            selected_question = None
-            
-
-            if selected_meal is None:
-                selected_meal = st.selectbox("Select your recommended meal", meal_names)
-
-            if selected_question is None:
-                selected_question = st.selectbox("Select a dietary question", questions)
-
-            # Check if both selections have been made
-            if selected_meal and selected_question:
-                input_prompt = "I am eating {}. {}".format(selected_meal, selected_question)
-                print("2:", input_prompt)
-                bard_result = bard.get_answer(input_prompt)['content']
-                print(bard_result)
-                post_dietary_response(selected_restaurant,selected_meal,selected_question, bard_result)
-                st.write(bard_result)
-                    # st.experimental_rerun()
-
-
-            # user_input = st.text_input("Ask a question to our AI bot!")
-
-            # if st.button("Get Answer!"):
-            #     # Check if user input exists and is not empty
-            #     if user_input:
-            #         print(user_input)
-            #         user_bard_result = bard.get_answer(user_input)['content']
-            #         if user_bard_result:
-            #             print(user_bard_result)
-            #             st.write(user_bard_result)
-
-
+        else:
+            st.warning("Please select a restaurant first")
     with tab3:
             st.header("Help us help you. We value your Feedback!")
 
@@ -267,8 +256,31 @@ if  st.session_state['login'] == True:
 
 
     with tab5:
-        st.title("Documentation... Coming Soon!")
-        st.write("Check out our GitHub Repo for more details! Lets put details about the LLM and project here!")
+        st.header("**BiteBuddy**")
+        st.markdown('''A personal dish recommendation app that leverages AI to help you make your choice.''')
+        
+        st.markdown(''' **How to use the App** : It's  just a click away!''')
+        st.markdown(" 1. Go to Explore Restaurant")
+        st.markdown(" 2. Select the restaurant you are at")
+        st.markdown(" 3. Hit the Get Recommendation tab")
+        st.text("Voila!!! You have a list of best dishes at your disposal!")
+
+
+        
+        st.subheader("**Documentation**")
+        st.markdown("- [Presentation]()")
+        st.markdown("- [Project Report](http://google.com.au/)")
+        st.markdown("- [Progress Report](https://docs.google.com/presentation/d/17kCFljf3qQ_N1jVAuPRQN1Kkjuj9VNN2pcAsQIeOGnE/edit#slide=id.g28262b8e96a_2_275)")
+        st.markdown("- [Git Repo](https://github.com/LLM-App-DataEng-Group2/BiteBuddy.git)")
+        
+        
+        st.subheader("**Data and Technologies**")
+        st.image('images/image.png', width=400)
+        st.image('images/llm.png', width=400) 
+
+
+        
+
         # dummy comment
 
 
@@ -299,7 +311,7 @@ if  st.session_state['login'] == True:
         sum_row['POSITIVE_FEEDBACK_PERC'] = round(sum_row['TOTAL_POS_FEEDBACK'] / sum_row['TOTAL_FEEDBACK'] * 100, 1)
         st.write(sum_row)
         # st.write(sum_df)
-        st.divider()
+        st.write("---")
 
 
         #####################################################
@@ -307,7 +319,7 @@ if  st.session_state['login'] == True:
         #####################################################
         st.subheader("Snowflake Usage Overview:")
         st.info("For more details see the Streamlit app in Snowflake - https://app.snowflake.com/pjpbfql/knb43715/#/streamlit-apps/DAMG7374.PUBLIC.NENLD3FVOT0GSA9I?ref=snowsight_shared!", icon="ℹ️")
-        st.divider()
+        st.write("---")
 
         #############################################
         #     Credit Usage Total (Bar Chart)
