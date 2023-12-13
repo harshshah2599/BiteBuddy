@@ -1,13 +1,29 @@
 import streamlit as st
 from auth_user import create_user,login_user
-from utils import get_restaurant_names
+# from utils import get_diet_answers
 import sys
 sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
-from main import get_map #get_reviews
+from main import get_serpapi_reviews
 from eda import eda
 from snowflake_data import *
-import plotly.express as px 
+import plotly.express as px
+from bardapi import BardCookies
+
+
+load_dotenv('/Users/harsh/GenAI/Bitebuddy/BiteBuddy/.env')
+# Access variables
+token1 = os.getenv("ID")
+token2 = os.getenv("IDTS")
+token3 = os.getenv("IDCC")
+
+cookie_dict = {
+    "__Secure-1PSID": token1,
+    "__Secure-1PSIDTS": token2,
+    "__Secure-1PSIDCC": token3,
+}
+
+bard = BardCookies(cookie_dict=cookie_dict)
 
 #dummy comment
 
@@ -63,7 +79,8 @@ if  st.session_state['login'] != True:
     st.header("Let us help... will you?")
     
 if  st.session_state['login'] == True:
-    tab1, tab2, tab3, tab4 = st.tabs(["Home", "Explore a Restaurant🔎" , "Bitebuddy Documentation📃", "Monitoring📊"])
+    st.toast("Warming up BiteBuddy...")
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Home", "Explore a Restaurant 🔎", "Feedback 📝", "Bitebuddy Pro 😎", "Bitebuddy Documentation 📃", "Monitoring 📊","Know My Restaurant (Unfiltered)😬 "])
     with tab1:
         st.title("Welcome to your.... BITEBUDDY! 🍽️")
 
@@ -140,8 +157,8 @@ if  st.session_state['login'] == True:
             st.header("Well, here's what BITEBUDDY says.....")
             # Display the DataFrame without the index
             st.dataframe(snowflake_df, hide_index=True)
-            #st.divider()
-            st.write("---")
+            st.divider()
+
 
             #####################################################
             # RLHF:
@@ -152,10 +169,136 @@ if  st.session_state['login'] == True:
             # Dietary Restrictions:
             #####################################################
             st.info('Model: The AI model isn''t perfect, so make sure to double check the dietary restrictions output before consuming the meal!', icon="⚠️")
+            questions = [
+                "Does this dish contain gluten?",
+                "Are there nuts in this meal?",
+                "Is this dish suitable for vegetarians?",
+                "Is this dish spicy?",
+                # Add more questions here...
+            ]
+            meal_names = snowflake_df[['MEAL_NAME']]
+            # Streamlit app
+            st.subheader("Ask Dietary Questions about Meals")
+
+
+            selected_meal = None
+            selected_question = None
+            
+
+            if selected_meal is None:
+                selected_meal = st.selectbox("Select your recommended meal", meal_names)
+
+            if selected_question is None:
+                selected_question = st.selectbox("Select a dietary question", questions)
+
+            # Check if both selections have been made
+            if selected_meal and selected_question:
+                input_prompt = "I am eating {}. {}".format(selected_meal, selected_question)
+                print("2:", input_prompt)
+                bard_result = bard.get_answer(input_prompt)['content']
+                print(bard_result)
+                post_dietary_response(selected_restaurant,selected_meal,selected_question, bard_result)
+                st.write(bard_result)
+                    # st.experimental_rerun()
+
+
+            # user_input = st.text_input("Ask a question to our AI bot!")
+
+            # if st.button("Get Answer!"):
+            #     # Check if user input exists and is not empty
+            #     if user_input:
+            #         print(user_input)
+            #         user_bard_result = bard.get_answer(user_input)['content']
+            #         if user_bard_result:
+            #             print(user_bard_result)
+            #             st.write(user_bard_result)
 
         else:
             st.warning("Please select a restaurant first")
     with tab3:
+            st.header("Help us help you. We value your Feedback!")
+
+            #select box for restaurant names
+            restaurant_list = get_restaurants()
+            selected_restaurant = st.selectbox("Select a restaurant to provide feedback:", restaurant_list)
+            # Fixing restaurant name for SQL query
+            selected_restaurant = selected_restaurant.replace("'", "''")
+
+            snowflake_df = get_reviews_summary(selected_restaurant)
+            meal_names = snowflake_df[['MEAL_NAME']]
+            selected_meal = st.selectbox("Select the meal you were recommended:", meal_names)
+            
+
+            positive_feedback = None
+
+            if selected_meal:
+                col1, col2 = st.columns(2)
+
+                if col1.button("Yay! I liked the Bitebuddy meal recommendation"):
+                    positive_feedback = 1  # Set positive feedback value to 1
+
+                if col2.button("Nay! I disliked the Bitebuddy meal recommendation"):
+                    positive_feedback = 0  # Set positive feedback value to 0 if negative
+
+                if positive_feedback is not None:
+                    st.success(f"Feedback stored: {'Positive' if positive_feedback else 'Negative'}")
+                    post_user_feedback(selected_restaurant,selected_meal,positive_feedback)
+                    # You can store the feedback value here in a database or use it as needed
+
+    with tab4:
+        st.title("BITEBUDDY x GEMINI 🚀")
+        st.info('Disclaimer: This is an attempt to clone Gemini Pro functionalities into BiteBuddy and explore the future scope of our app prior to the API being available officially', icon="⚠️")
+        st.subheader("Exploring multimodality with BiteBuddy....")
+        block1, block2, block3 = st.tabs(["BITEVIEW 👀","FLAVORSCRIBE 📹","MENUFIND 🧾"])
+        with block1:
+            st.write("Some awesome food pictures? We love it.")
+            prompt_with_image = st.text_input("Shoot me some questions!",key="image_questions")
+            # I recently had this dish at Olive Garden but don't remember it's name. Can you tell me what this is?
+            #user uploads an image
+            uploaded_file = st.file_uploader("Upload an image", type=['jpg', 'jpeg', 'png', 'webp'],key="image_uploader")
+
+            if uploaded_file is not None:
+
+                image = uploaded_file.read()
+                bard_answer = bard.ask_about_image(prompt_with_image, image)
+
+                # Displaying the image
+                if 'image' in bard_answer:
+                    st.image(bard_answer['image'], caption='Answer Image')
+                st.write(bard_answer['content'])
+
+        with block2:
+            st.write("Have any Food videos? We'll watch it for you.")
+            youtube_url = st.text_input("Enter your video URL:")
+            # https://www.youtube.com/watch?v=K9qJQmOeohU
+
+            # What is being cooked in the video? Can you give me the reciepe followed?
+
+            user_question = st.text_input("Shoot me a question!",key="video_questions")
+            
+            if st.button("Submit"):
+                
+                prompt = f"User question: {user_question}. YouTube URL: {youtube_url}. "
+                bard_answer = bard.get_answer(prompt)
+                st.write(bard_answer['content'])
+
+        with block3:
+            st.write("Upload a Menu card and let BiteBuddy do the work!")
+            prompt_with_menu = st.text_input("Shoot me some questions!",key="menu_questions")
+
+            #What do you think are the best dishes from the menu:
+
+            #user uploads an image
+            uploaded_file = st.file_uploader("Upload an image", type=['jpg', 'jpeg', 'png', 'webp'],key="menu_uploader")
+
+            if uploaded_file is not None:
+
+                image = uploaded_file.read()
+                bard_answer = bard.ask_about_image(prompt_with_menu, image)
+                st.write(bard_answer['content'])
+
+
+    with tab5:
         st.header("**BiteBuddy**")
         st.markdown('''A personal dish recommendation app that leverages AI to help you make your choice.''')
         
@@ -184,7 +327,7 @@ if  st.session_state['login'] == True:
         # dummy comment
 
 
-    with tab4:
+    with tab6:
         # Only have access to this tab if logged in as admin else redirect to home page
         st.title("Monitoring... Coming Soon!")
         st.write("Admin Monitoring Reports will be displayed here!")
@@ -248,3 +391,75 @@ if  st.session_state['login'] == True:
         #chart
         fig_credits_used_overtime_df=px.bar(credits_used_overtime_df,x='USAGE_DATE',y='TOTAL_CREDITS_USED',color='WAREHOUSE_NAME',orientation='v',title="Credits Used Overtime")
         st.plotly_chart(fig_credits_used_overtime_df, use_container_width=True)
+
+
+    with tab7:
+        #select box for restaurant names
+        restaurant_list = get_restaurants()
+        selected_restaurant = st.selectbox("Select a restaurant:", restaurant_list, key="serpapi_restaurants")
+        if st.button("Explore!"):
+
+        
+            df, reviews, img_urls, restaurant_data = get_serpapi_reviews(selected_restaurant)
+            # title = restaurant_data.get('place_info', {}).get('title')
+            # st.title(title)
+
+            # st.subheader('Restaurant Type')
+            # st.write(', '.join(restaurant_data['type']))
+            
+            # st.subheader('Description')
+            # st.write(restaurant_data['description'])
+            
+            # st.subheader('Menu')
+            # st.write(restaurant_data['menu']['source'])
+            # st.write(restaurant_data['menu']['link'])
+
+            # Extracting relevant information
+            restaurant_name = restaurant_data['place_info']['title']
+            description = f"Address: {restaurant_data['place_info']['address']}\nRating: {restaurant_data['place_info']['rating']}\nReviews: {restaurant_data['place_info']['reviews']}"
+
+            # Extract menu and links
+            menu_items = [topic['keyword'] for topic in restaurant_data['topics']]
+            links = [review['link'] for review in restaurant_data['reviews']]
+
+            # Display information on Streamlit
+            st.title(restaurant_name)
+            st.write(description)
+
+            # Create a DataFrame from the menu items
+            data = {'Menu Items': menu_items}
+            df = pd.DataFrame(data)
+
+            # Display the DataFrame using Streamlit
+            st.subheader("Popular Menu Items")
+            st.dataframe(df)
+
+            st.subheader("Links")
+            for link in links:
+                st.write(link)
+                break
+
+
+            # st.write(df)
+            st.subheader("Here's what people wrote on google:")
+            st.text_area(label="",value=reviews, height=200)
+            st.subheader("Here's what they clicked:")
+            # Display images side by side using columns
+            num_images = len(img_urls)
+            num_columns = 6  # Number of columns to arrange the images
+
+            # Calculate number of rows needed
+            num_rows = -(-num_images // num_columns)  # Ceiling division to get the total rows
+
+            for i in range(num_rows):
+                row_images = img_urls[i * num_columns: (i + 1) * num_columns]
+                cols = st.columns(num_columns)
+
+                for col, image_url in zip(cols, row_images):
+                    with col:
+                        if image_url:  # Check if URL is not empty
+                            st.image(image_url, use_column_width=True)
+                        else:
+                            st.write("No image available")
+
+

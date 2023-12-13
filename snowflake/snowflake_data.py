@@ -299,3 +299,32 @@ def get_credit_usage_over_time():
     df = pd.DataFrame(data, columns=[desc[0] for desc in cursor.description])
 
     return df
+
+
+def post_dietary_response(restaurant, meal, question, response):
+    # Set up connection parameters
+
+    conn = snowflake_conn()
+
+    # Execute a query
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO damg7374.mart.bitebuddy_dietary_responses VALUES (%s, %s, %s, %s, CURRENT_DATE())", (restaurant, meal, question, response))
+
+    # Commit the transaction
+    conn.commit()
+
+    
+def post_user_feedback(restaurant, meal, feedback):
+    # Set up connection parameters
+    conn = snowflake_conn()
+
+    # Execute a query
+    cursor = conn.cursor()
+    
+    cursor.execute(
+        "INSERT INTO damg7374.mart.bitebuddy_rlhf VALUES (%s, %s, %s, CURRENT_DATE())",
+        (restaurant, meal, feedback)
+    )
+
+    # Commit the transaction
+    conn.commit()
