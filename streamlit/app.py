@@ -23,7 +23,7 @@ cookie_dict = {
     "__Secure-1PSIDCC": token3,
 }
 
-# bard = BardCookies(cookie_dict=cookie_dict)
+bard = BardCookies(cookie_dict=cookie_dict)
 
 #dummy comment
 
@@ -272,7 +272,7 @@ if  st.session_state['login'] == True:
             youtube_url = st.text_input("Enter your video URL:")
             # https://www.youtube.com/watch?v=K9qJQmOeohU
 
-            # What is being cooked in the video. Can you give me the reciepe followed?
+            # What is being cooked in the video? Can you give me the reciepe followed?
 
             user_question = st.text_input("Shoot me a question!",key="video_questions")
             
