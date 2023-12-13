@@ -5,14 +5,13 @@
 
 **BiteBuddy** is a crowdsourced dining companion that helps you ditch menu paralysis and discover the best dishes based on real customer experiences. No more relying on upselling waiters or blindly picking dishes. BiteBuddy empowers you to make informed dining choices with confidence.
 
-**Features:**
+### Features:
 
 * **Personalized recommendations:** Discover hidden gems and avoid menu duds.
 * **Data-driven:** Make informed choices based on real user experiences.
 * **Simple and free:** Easy to use and no cost to access.
 
 **Use BiteBuddy and eat like a local!**
-
 
 
 ### Work Docs:
