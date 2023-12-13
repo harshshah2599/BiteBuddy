@@ -23,7 +23,7 @@ cookie_dict = {
     "__Secure-1PSIDCC": token3,
 }
 
-bard = BardCookies(cookie_dict=cookie_dict)
+# bard = BardCookies(cookie_dict=cookie_dict)
 
 #dummy comment
 
@@ -80,7 +80,7 @@ if  st.session_state['login'] != True:
     
 if  st.session_state['login'] == True:
     st.toast("Warming up BiteBuddy...")
-    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Home", "Explore a Restaurant 🔎", "Feedback 📝", "Bitebuddy Pro 😎", "Bitebuddy Documentation 📃", "Monitoring 📊","SerpAPI 🐍"])
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Home", "Explore a Restaurant 🔎", "Feedback 📝", "Bitebuddy Pro 😎", "Bitebuddy Documentation 📃", "Monitoring 📊","Know My Restaurant (Unfiltered)😬 "])
     with tab1:
         st.title("Welcome to your.... BITEBUDDY! 🍽️")
 
@@ -169,6 +169,49 @@ if  st.session_state['login'] == True:
             # Dietary Restrictions:
             #####################################################
             st.info('Model: The AI model isn''t perfect, so make sure to double check the dietary restrictions output before consuming the meal!', icon="⚠️")
+            questions = [
+                "Does this dish contain gluten?",
+                "Are there nuts in this meal?",
+                "Is this dish suitable for vegetarians?",
+                "Is this dish spicy?",
+                # Add more questions here...
+            ]
+            meal_names = snowflake_df[['MEAL_NAME']]
+            # Streamlit app
+            st.subheader("Ask Dietary Questions about Meals")
+
+
+            selected_meal = None
+            selected_question = None
+            
+
+            if selected_meal is None:
+                selected_meal = st.selectbox("Select your recommended meal", meal_names)
+
+            if selected_question is None:
+                selected_question = st.selectbox("Select a dietary question", questions)
+
+            # Check if both selections have been made
+            if selected_meal and selected_question:
+                input_prompt = "I am eating {}. {}".format(selected_meal, selected_question)
+                print("2:", input_prompt)
+                bard_result = bard.get_answer(input_prompt)['content']
+                print(bard_result)
+                post_dietary_response(selected_restaurant,selected_meal,selected_question, bard_result)
+                st.write(bard_result)
+                    # st.experimental_rerun()
+
+
+            # user_input = st.text_input("Ask a question to our AI bot!")
+
+            # if st.button("Get Answer!"):
+            #     # Check if user input exists and is not empty
+            #     if user_input:
+            #         print(user_input)
+            #         user_bard_result = bard.get_answer(user_input)['content']
+            #         if user_bard_result:
+            #             print(user_bard_result)
+            #             st.write(user_bard_result)
 
         else:
             st.warning("Please select a restaurant first")
