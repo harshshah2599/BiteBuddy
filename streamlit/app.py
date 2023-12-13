@@ -414,8 +414,34 @@ if  st.session_state['login'] == True:
             # st.write(restaurant_data['menu']['source'])
             # st.write(restaurant_data['menu']['link'])
 
+            # Extracting relevant information
+            restaurant_name = restaurant_data['place_info']['title']
+            description = f"Address: {restaurant_data['place_info']['address']}\nRating: {restaurant_data['place_info']['rating']}\nReviews: {restaurant_data['place_info']['reviews']}"
+
+            # Extract menu and links
+            menu_items = [topic['keyword'] for topic in restaurant_data['topics']]
+            links = [review['link'] for review in restaurant_data['reviews']]
+
+            # Display information on Streamlit
+            st.title(restaurant_name)
+            st.write(description)
+
+            # Create a DataFrame from the menu items
+            data = {'Menu Items': menu_items}
+            df = pd.DataFrame(data)
+
+            # Display the DataFrame using Streamlit
+            st.subheader("Popular Menu Items")
+            st.dataframe(df)
+
+            st.subheader("Links")
+            for link in links:
+                st.write(link)
+                break
+
 
             # st.write(df)
+            st.subheader("Here's what people wrote on google:")
             st.text_area(label="",value=reviews, height=200)
             st.subheader("Here's what they clicked:")
             # Display images side by side using columns
