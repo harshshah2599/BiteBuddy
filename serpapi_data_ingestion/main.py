@@ -39,7 +39,7 @@ def get_serpapi_reviews(restaurant_name):
     scapped_reviews = search.get_dict()
 
     raw_reviews_data =  scapped_reviews
-    print(raw_reviews_data)
+    # print(raw_reviews_data)
     # Clean the data
     # Extract the restaurant name and snippets
     restaurant_name = raw_reviews_data['place_info']['title']
