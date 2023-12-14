@@ -4,14 +4,16 @@ from utils import get_diet_answers
 import sys
 sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
+sys.path.insert(2, '../LLM')
 from main import get_serpapi_reviews
 from eda import eda
 from snowflake_data import *
 import plotly.express as px
+from LLM_Processing import *
 from bardapi import BardCookies
 
 
-load_dotenv('/Users/akshaysawant/LLM/BiteBuddy/.env')
+load_dotenv('C:\\Users\\j.videlefsky\\Documents\\DAMG7374 - GenAI and DataEng\\BiteBuddy\\.env')
 # Access variables
 token1 = os.getenv("ID")
 token2 = os.getenv("IDTS")
@@ -25,7 +27,6 @@ cookie_dict = {
 
 bard = BardCookies(cookie_dict=cookie_dict)
 
-#dummy comment
 
 user_type = st.session_state.get("user_type")  # Get user type from session state
 
@@ -33,6 +34,8 @@ user_type = st.session_state.get("user_type")  # Get user type from session stat
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
 with st.sidebar:
+    # bitebuddy logo
+    st.image('../BiteBuddy Logo.png', width=200)
     # options menu
     selected = st.selectbox("Menu", ["Log In", 'Sign Up'])
     
@@ -127,8 +130,39 @@ if  st.session_state['login'] == True:
 
             st.toast('Warming up BiteBuddy...')
 
+
             # If new restaurant, get reviews and process them
             st.write('TODO: code to get reviews and process them')
+            # if value for selected_restaurant_b
+            if selected_restaurant_b:
+                #################################################################################
+                # Get reviews for the selected restaurant
+                df = get_reviews_new(selected_restaurant)
+                st.write("Get reviews for the selected restaurant")
+                st.dataframe(df.head())
+                # Estimated code run time - 90 seconds to process 90 rows
+                st.write(f"Estimated full run time: {round((df.shape[0] / 90 * 90) / 60,2)} minutes")
+                df = df.head(100)
+                st.write(f"Estimated POC run time: {round((df.shape[0] / 90 * 90) / 60,2)} minutes")
+                # Process the reviews through the LLM
+                result_df = process_reviews(df)
+                st.write("Process the reviews through the LLM")
+                print(result_df.head())
+                # Post-Processing of the LLM Output
+                result_df = post_processing(result_df)
+                st.write("Post-Processing of the LLM Output")
+                print(result_df.head())
+                # Clustering of Meal Names Results
+                df = clustering(result_df)
+                st.write("Clustering of Meal Names Results")
+                print(df.head())
+                # Assign Cluster Labels
+                df = assign_cluster_labels(df)
+                st.write("Assign Cluster Labels")
+                print(df.head())
+                # Insert into Snowflake
+                update_reviews(df, 'damg7374.mart.review_llm_output')
+                #################################################################################
 
 
             snowflake_df = get_reviews_summary(selected_restaurant)
