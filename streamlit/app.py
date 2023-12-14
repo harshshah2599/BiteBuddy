@@ -1,6 +1,6 @@
 import streamlit as st
 from auth_user import create_user,login_user
-# from utils import get_diet_answers
+from utils import get_diet_answers
 import sys
 sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
@@ -11,7 +11,7 @@ import plotly.express as px
 from bardapi import BardCookies
 
 
-load_dotenv('/Users/harsh/GenAI/Bitebuddy/BiteBuddy/.env')
+load_dotenv('/Users/akshaysawant/LLM/BiteBuddy/.env')
 # Access variables
 token1 = os.getenv("ID")
 token2 = os.getenv("IDTS")
@@ -27,6 +27,9 @@ bard = BardCookies(cookie_dict=cookie_dict)
 
 #dummy comment
 
+user_type = st.session_state.get("user_type")  # Get user type from session state
+
+
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
 with st.sidebar:
@@ -36,6 +39,8 @@ with st.sidebar:
     # log in form
     if 'login' not in st.session_state:
         st.session_state['login'] = False
+        st.session_state['is_admin'] = False
+
 
 
 
@@ -48,10 +53,12 @@ with st.sidebar:
         if st.button('Log In!'):
             # send login request
             st.session_state['login'] = login_user(login_username,login_password)
+            st.session_state['is_admin'] = is_admin(login_username,login_password)
 
         if st.session_state['login'] == True:
             if st.button("Logout"):
                 st.session_state['login'] = False
+                st.session_state['is_admin'] = False
 
     # # Sign-up form
     if selected == "Sign Up":
@@ -81,6 +88,9 @@ if  st.session_state['login'] != True:
 if  st.session_state['login'] == True:
     st.toast("Warming up BiteBuddy...")
     tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Home", "Explore a Restaurant 🔎", "Feedback 📝", "Bitebuddy Pro 😎", "Bitebuddy Documentation 📃", "Monitoring 📊","Know My Restaurant (Unfiltered)😬 "])
+    
+
+   
     with tab1:
         st.title("Welcome to your.... BITEBUDDY! 🍽️")
 
@@ -328,71 +338,76 @@ if  st.session_state['login'] == True:
 
 
     with tab6:
-        # Only have access to this tab if logged in as admin else redirect to home page
-        st.title("Monitoring... Coming Soon!")
-        st.write("Admin Monitoring Reports will be displayed here!")
+        if login_username == "admin" and login_password =="admin":
+        
+            # Only have access to this tab if logged in as admin else redirect to home page
+            st.title("Monitoring... Coming Soon!")
+            st.write("Admin Monitoring Reports will be displayed here!")
 
-        #####################################################
-        # Feedback Monitoring:
-        #####################################################
-        df = get_feedback_summary()
-        st.subheader("Feedback Details:")
-        st.write(df)
+            #####################################################
+            # Feedback Monitoring:
+            #####################################################
+            df = get_feedback_summary()
+            st.subheader("Feedback Details:")
+            st.write(df)
 
-        st.title("Feedback Over Time")
+            st.title("Feedback Over Time")
 
-        # Bar chart
-        st.bar_chart(df.set_index('CREATE_DATE')[['TOTAL_POS_FEEDBACK', 'TOTAL_NEG_FEEDBACK']])
+            # Bar chart
+            st.bar_chart(df.set_index('CREATE_DATE')[['TOTAL_POS_FEEDBACK', 'TOTAL_NEG_FEEDBACK']])
 
-        st.subheader("Feedback Summary:")
-        # st.write(df.columns)
-        # List of columns for which you want to calculate the sum
-        columns_to_sum = ["TOTAL_RESTAURANTS_FEEDBACK", "TOTAL_MEALS_FEEDBACK", "TOTAL_FEEDBACK", "TOTAL_POS_FEEDBACK", "TOTAL_NEG_FEEDBACK"]
+            st.subheader("Feedback Summary:")
+            # st.write(df.columns)
+            # List of columns for which you want to calculate the sum
+            columns_to_sum = ["TOTAL_RESTAURANTS_FEEDBACK", "TOTAL_MEALS_FEEDBACK", "TOTAL_FEEDBACK", "TOTAL_POS_FEEDBACK", "TOTAL_NEG_FEEDBACK"]
 
-        # Calculate the sum of selected columns and create a new row in the DataFrame
-        sum_row = df[columns_to_sum].sum().to_frame().T
-        sum_row['POSITIVE_FEEDBACK_PERC'] = round(sum_row['TOTAL_POS_FEEDBACK'] / sum_row['TOTAL_FEEDBACK'] * 100, 1)
-        st.write(sum_row)
-        # st.write(sum_df)
-        st.write("---")
-
-
-        #####################################################
-        # Snowflake Usage Monitoring:
-        #####################################################
-        st.subheader("Snowflake Usage Overview:")
-        st.info("For more details see the Streamlit app in Snowflake - https://app.snowflake.com/pjpbfql/knb43715/#/streamlit-apps/DAMG7374.PUBLIC.NENLD3FVOT0GSA9I?ref=snowsight_shared!", icon="ℹ️")
-        st.write("---")
-
-        #############################################
-        #     Credit Usage Total (Bar Chart)
-        #############################################
-        #Credits Usage (Total)
-        total_credits_used_df = get_credit_usage()
-
-        #Chart
-        fig_credits_used=px.bar(total_credits_used_df,x='TOTAL_CREDITS_USED',y='WAREHOUSE_NAME',orientation='h',title="Credits Used by Warehouse")
-        fig_credits_used.update_traces(marker_color='green')
-        st.plotly_chart(fig_credits_used)
-
-        #############################################
-        #     Credits Billed by Month
-        #############################################
-        credits_billed_df = get_credit_usage_month()
-        #st.write(credits_billed_df)
-        fig_credits_billed=px.bar(credits_billed_df,x='USAGE_MONTH',y='SUM(CREDITS_BILLED)', orientation='v',title="Credits Billed by Month")
-        st.plotly_chart(fig_credits_billed, use_container_width=True)
-
-        #############################################
-        #     Credits Used Overtime
-        #############################################
-        #Credits Used Overtime
-        credits_used_overtime_df = get_credit_usage_over_time()
-        #chart
-        fig_credits_used_overtime_df=px.bar(credits_used_overtime_df,x='USAGE_DATE',y='TOTAL_CREDITS_USED',color='WAREHOUSE_NAME',orientation='v',title="Credits Used Overtime")
-        st.plotly_chart(fig_credits_used_overtime_df, use_container_width=True)
+            # Calculate the sum of selected columns and create a new row in the DataFrame
+            sum_row = df[columns_to_sum].sum().to_frame().T
+            sum_row['POSITIVE_FEEDBACK_PERC'] = round(sum_row['TOTAL_POS_FEEDBACK'] / sum_row['TOTAL_FEEDBACK'] * 100, 1)
+            st.write(sum_row)
+            # st.write(sum_df)
+            st.write("---")
 
 
+            #####################################################
+            # Snowflake Usage Monitoring:
+            #####################################################
+            st.subheader("Snowflake Usage Overview:")
+            st.info("For more details see the Streamlit app in Snowflake - https://app.snowflake.com/pjpbfql/knb43715/#/streamlit-apps/DAMG7374.PUBLIC.NENLD3FVOT0GSA9I?ref=snowsight_shared!", icon="ℹ️")
+            st.write("---")
+
+            #############################################
+            #     Credit Usage Total (Bar Chart)
+            #############################################
+            #Credits Usage (Total)
+            total_credits_used_df = get_credit_usage()
+
+            #Chart
+            fig_credits_used=px.bar(total_credits_used_df,x='TOTAL_CREDITS_USED',y='WAREHOUSE_NAME',orientation='h',title="Credits Used by Warehouse")
+            fig_credits_used.update_traces(marker_color='green')
+            st.plotly_chart(fig_credits_used)
+
+            #############################################
+            #     Credits Billed by Month
+            #############################################
+            credits_billed_df = get_credit_usage_month()
+            #st.write(credits_billed_df)
+            fig_credits_billed=px.bar(credits_billed_df,x='USAGE_MONTH',y='SUM(CREDITS_BILLED)', orientation='v',title="Credits Billed by Month")
+            st.plotly_chart(fig_credits_billed, use_container_width=True)
+
+            #############################################
+            #     Credits Used Overtime
+            #############################################
+            #Credits Used Overtime
+            credits_used_overtime_df = get_credit_usage_over_time()
+            #chart
+            fig_credits_used_overtime_df=px.bar(credits_used_overtime_df,x='USAGE_DATE',y='TOTAL_CREDITS_USED',color='WAREHOUSE_NAME',orientation='v',title="Credits Used Overtime")
+            st.plotly_chart(fig_credits_used_overtime_df, use_container_width=True)
+        
+        else:
+            st.error("Unauthorized")
+    
+        
     with tab7:
         #select box for restaurant names
         restaurant_list = get_restaurants()
