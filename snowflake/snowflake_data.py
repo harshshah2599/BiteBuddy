@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 ###############################################################################
 # Load variables from .env file
-load_dotenv('/Users/harsh/GenAI/Bitebuddy/BiteBuddy/.env')
+load_dotenv('C:\\Users\\j.videlefsky\\Documents\\DAMG7374 - GenAI and DataEng\\BiteBuddy\\.env')
 # Access variables
 SNOWFLAKE_USER = os.getenv("SNOWFLAKE_USER")
 SNOWFLAKE_PASSWORD = os.getenv("SNOWFLAKE_PASSWORD")

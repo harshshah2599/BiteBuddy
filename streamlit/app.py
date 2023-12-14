@@ -13,7 +13,7 @@ from LLM_Processing import *
 from bardapi import BardCookies
 
 
-load_dotenv('/Users/harsh/GenAI/Bitebuddy/BiteBuddy/.env')
+load_dotenv('C:\\Users\\j.videlefsky\\Documents\\DAMG7374 - GenAI and DataEng\\BiteBuddy\\.env')
 # Access variables
 token1 = os.getenv("ID")
 token2 = os.getenv("IDTS")
