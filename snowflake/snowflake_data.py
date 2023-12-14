@@ -25,8 +25,9 @@ def get_restaurants():
     # Execute a query
     # business_name = 'Rod Dee Thai Cuisine'
     cursor = conn.cursor()
+    # used staging.sample_reviews for development
     cursor.execute(f"""SELECT distinct business_name
-                        FROM DAMG7374.staging.sample_reviews
+                        FROM DAMG7374.mart.review_llm_output
                         order by business_name
                         """)
 
@@ -70,8 +71,9 @@ def get_reviews(business_name):
     # Execute a query
     # business_name = 'Anna's Taqueria'
     cursor = conn.cursor()
+    # used sample_reviews for development
     cursor.execute(f"""SELECT business_name, review_text
-                        FROM DAMG7374.staging.sample_reviews
+                        FROM DAMG7374.staging.reviews
                         WHERE BUSINESS_NAME = '{business_name}'
                         LIMIT 10""")
 
@@ -129,7 +131,8 @@ def update_reviews(df, snowflake_table_name):
     #     print(f"Error Code: {e.errno}")
     #     print(f"SQL State: {e.sqlstate}")
     #     print(f"Error Message: {e.msg}")
-
+    df = df[['BUSINESS_NAME', 'RATING', 'MEAL_NAME', 'SENTIMENT', 'CLUSTER', 'CLUSTER_LABEL']]
+    df = df[~df['MEAL_NAME'].isnull()]
     data_tuples = list(df.itertuples(index=False, name=None))
 
     cursor = conn.cursor()
@@ -139,7 +142,7 @@ def update_reviews(df, snowflake_table_name):
             cursor.execute(sql, record)
         conn.commit()
     except Exception as e:
-        print(e)
+        print(f'upload failed - exception: {e}')
     finally:
         cursor.close()
 
