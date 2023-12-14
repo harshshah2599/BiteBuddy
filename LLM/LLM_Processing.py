@@ -9,20 +9,16 @@ import os
 import pandas as pd
 import numpy as np
 import time
-import json
 import ast
-import re
 import google.generativeai as palm
 from dotenv import load_dotenv
 
 import sys
-sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
 from snowflake_data import *
-###############################################################################
-# Python Functions - Custom
-# import processing_fxns
-# import similarity_grouping_fxn
+# pip install sentence-transformers scikit-learn pandas
+from sentence_transformers import SentenceTransformer
+from sklearn.cluster import AgglomerativeClustering, KMeans
 
 
 ###############################################################################
@@ -35,25 +31,15 @@ PALM_API_KEY = os.getenv("PALM_API_KEY")
 # LLM - Configure the PaLM API with your API key.
 palm.configure(api_key=PALM_API_KEY)
 
+# Variables Use Throughout
+review_column = 'REVIEW_TEXT'
+llm_output_column = 'MEALS_AND_SENTIMENTS'
+# Load a pre-trained BERT model from Sentence Transformers
+model = SentenceTransformer('all-MiniLM-L6-v2') #('gte-tiny') #('paraphrase-MiniLM-L6-v2')
+
 ###############################################################################
 # Import Data from Snowflake
-business_name = "Oliveira's Steak House"
-business_name = business_name.replace("'", "''")
-test = f"""SELECT business_name, review_text
-                        FROM DAMG7374.staging.sample_reviews
-                        WHERE BUSINESS_NAME = '{business_name}'
-                        LIMIT 10"""
-df = get_reviews_new(business_name)
-
-###############################################################################
-# Data Exploration
-# Display the DataFrame
-df.head()
-# testing
-df = df.head(10)
-# print(df.columns)
-# print(f'Total Records: {df.size}')
-
+# df = get_reviews_new(business_name)
 
 ###############################################################################
 # LLM Function - Get Meal Names and Sentiment
@@ -103,13 +89,9 @@ def get_meal_names(review_text):
     return meal_names
 
 
-
 ###############################################################################
 # CODE FLOW:
-review_column = 'REVIEW_TEXT'
-llm_output_column = 'MEALS_AND_SENTIMENTS'
-
-def process_reviews(df, review_column, llm_output_column):
+def process_reviews(df, review_column='REVIEW_TEXT', llm_output_column='MEALS_AND_SENTIMENTS'):
     # 1. Processing Chunks - to apply the llm to the review_text column 90 records per minute
     # Chunk size limited by LLM API
     chunk_size = 90
@@ -131,7 +113,9 @@ def process_reviews(df, review_column, llm_output_column):
         result_df = pd.concat([result_df, processed_chunk])
         print(f"""\n 65 Second break between processing records, due to 90 requests/minute quota. \n
             Current Records Processed: {result_df.shape[0]} \n""")
-        time.sleep(65)  # 2 minutes break
+        # if more than 90 records, then 65 second break
+        if processed_chunk.shape[0] >= 90:
+            time.sleep(65)  # 2 minutes break
 
     # Record the stop time
     stop_time = time.time()
@@ -143,64 +127,52 @@ def process_reviews(df, review_column, llm_output_column):
 
     return result_df
 
-result_df = process_reviews(df, review_column, llm_output_column)
+# result_df = process_reviews(df, review_column, llm_output_column)
+
 
 ###############################################################################
 # POST-PROCESSING:
-def post_processing(df, llm_output_column):
+def post_processing(df, llm_output_column='MEALS_AND_SENTIMENTS'):
     # Use explode to transform lists into separate rows
-    result_df2 = result_df.explode(llm_output_column)
+    df = df.explode(llm_output_column)
 
     # Use apply along with pd.Series to split the lists into two columns
-    result_df2[['MEAL_NAME', 'SENTIMENT']] = result_df2[llm_output_column].apply(lambda x: pd.Series([x[0], x[1]] if len(x) == 2 else ['', .5]))
+    df[['MEAL_NAME', 'SENTIMENT']] = df[llm_output_column].apply(lambda x: pd.Series([x[0], x[1]] if len(x) == 2 else ['', .5]))
     
+    # When the LLM messes up the format
+    # Convert lists to strings and remove square brackets
+    df[['MEAL_NAME', 'SENTIMENT']] = df[['MEAL_NAME', 'SENTIMENT']].apply(lambda x: str(x).strip('[]') if type(x) is list else x)
+
+    # Apply the function to the text column 
+    # df['MEAL_NAME'] = df['MEAL_NAME'].apply(processing_fxns.remove_stop_words)
+
+    return df
+
+# result_df = post_processing(df, llm_output_column)
 
 
-    return result_df2
-
-### POST-PROCESSING DATA CLEANING:
-# Apply the function to the text column
-exploded_df.columns
-exploded_df['MEAL_NAME'] = exploded_df['MEAL_NAME'].apply(processing_fxns.remove_stop_words)
-
-# PRE-SIMILARITY SEARCH RESULTS: Use value_counts to get counts of each unique value
-value_counts = exploded_df['MEAL_NAME'].value_counts()
-# List of meals
-exploded_df['MEALS_AND_SENTIMENTS'].tolist()
-# Count of unique meal names
-len(exploded_df['MEAL_NAME'].unique())
-
-
-### POST-PROCESSING SIMILARITY SEARCH:
-# Apply the function to the 'MEAL_NAME' from the review
-post_sim_df = similarity_grouping_fxn.clustering(exploded_df, 'MEAL_NAME', 50)
-
-
-
-
-
-
-
-
-
-
-
-
-###############################################################################
-# Post Processing:
-def post_processing(df, llm_output_column):
-    # Use explode to transform lists into separate rows
-    exploded_df = df.explode(llm_output_column)
-
-    # Use apply along with pd.Series to split the lists into two columns
-    exploded_df[['MEAL_NAME', 'SENTIMENT']] = exploded_df[llm_output_column].apply(lambda x: pd.Series([x[0], x[1]] if len(x) == 2 else ['', .5]))
-    # exploded_df.head()
-
-    # Apply the function to the text column
-    # exploded_df.columns
-    exploded_df['MEAL_NAME'] = exploded_df['MEAL_NAME'].apply(processing_fxns.remove_stop_words)
+#################################################################################
+# FUNCTION FOR CLUSTERING
+def clustering(df, column_name=llm_output_column, model=model, cluster_percentage=50):
     
-    return exploded_df
+    # Get embeddings for the terms
+    embeddings = model.encode(df[column_name].astype(str).tolist(), convert_to_tensor=True)
+    
+    # Perform clustering using Agglomerative Clustering
+    # Adjust the number of clusters (n_clusters) based on your use case
+    unique_values = len(df['MEAL_NAME'].unique())
+    # 66.7% of the unique values
+    n_clusters = int(unique_values * cluster_percentage/100)
+    # clustering = AgglomerativeClustering(n_clusters=n_clusters, affinity='cosine', linkage='average')
+    clustering = KMeans(n_clusters=n_clusters)
+    df['CLUSTER'] = clustering.fit_predict(embeddings)
+    
+    # Display the grouped DataFrame
+    print(df)
+
+    return df
+    
+# df = clustering(result_df, llm_output_column, model)
 
 
 #################################################################################
@@ -217,30 +189,14 @@ def assign_cluster_labels(df):
     # Merge the result back to the original DataFrame
     final_df = pd.merge(df, cluster_labels, on=['BUSINESS_NAME', 'CLUSTER'], how='left')
     
-    return df
+    # final_df = final_df.drop(columns=['CLUSTER_LABEL'])
 
-df = assign_cluster_labels(df)
+    return final_df
+
+# df = assign_cluster_labels(df)
 
 
 #################################################################################
 # Upload the data to Snowflake
 # append snowflake table damg7374.mart.reviews_llm_output with data in df
-# df.to_sql('reviews_llm_output', engine, schema='damg7374.mart', if_exists='append', index=False)
-# read data from csv file into pandas dataframe
-df = pd.read_csv('test_data_for_update.csv')
-df.head()
-update_reviews(df, 'damg7374.mart.review_llm_output')
-
-
-
-###############################################################################
-# TEMP RESULTS:
-# Save sample Results
-excel_file_path = 'C://Users//j.videlefsky//Documents//DAMG7374 - GenAI and DataEng//Sample_LLM_Output_Plus_Clusters_Annas.xlsx'
-
-# Save the DataFrame to an Excel file
-post_sim_df.to_excel(excel_file_path, index=False)
-
-
-
-###############################################################################
+# update_reviews(df, 'damg7374.mart.review_llm_output')

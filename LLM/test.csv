@@ -1,0 +1,171 @@
+BUSINESS_NAME,RATING,REVIEW_TEXT,MEALS_AND_SENTIMENTS,MEAL_NAME,SENTIMENT,CLUSTER,CLUSTER_LABEL
+Oliveira's Steak House,3,"Meat is a little salty for my taste, but wasn't inedible. Garlic beef and the flank steak were the best, but the rice and beans were the star. Great service and friendly staff.","['Garlic beef', 0.8]",Garlic beef,0.8,3,Flank steak
+Oliveira's Steak House,3,"Meat is a little salty for my taste, but wasn't inedible. Garlic beef and the flank steak were the best, but the rice and beans were the star. Great service and friendly staff.","['Flank steak', 0.8]",Flank steak,0.8,3,Flank steak
+Oliveira's Steak House,3,"Meat is a little salty for my taste, but wasn't inedible. Garlic beef and the flank steak were the best, but the rice and beans were the star. Great service and friendly staff.","['Rice and beans', 1.0]",Rice and beans,1.0,18,food
+Oliveira's Steak House,5,Delicious and authentic Brazilian food. Picanha is juicy and seasoned well. Desserts were good as well.,"['Picanha', 1]",Picanha,1.0,13,Picanha
+Oliveira's Steak House,5,Delicious and authentic Brazilian food. Picanha is juicy and seasoned well. Desserts were good as well.,"['Desserts', 1]",Desserts,1.0,14,Desserts
+Oliveira's Steak House,4,The all you can eat buffet was amazing. Sirloin was cooked perfectly!,"['all you can eat buffet', 1]",all you can eat buffet,1.0,1,buffet
+Oliveira's Steak House,4,The all you can eat buffet was amazing. Sirloin was cooked perfectly!,"['Sirloin', 1]",Sirloin,1.0,15,Sirloin
+Oliveira's Steak House,5,My favorite place in the Boston area.  Best rodizio. Great staff!!,"['rodizio', 1]",rodizio,1.0,16,rodizio
+Oliveira's Steak House,5,"Buffet offers a big, varied selection to compliment the constant supply of meat cut off of skewers by the waiters. Everything I tried was delicious, especially the pork ribs.
+
+My only complain would be that you can't pick which meats you want. I went in really wanting some lamb sirloin and the ribs. The ribs came at the very end, no lamb ever came around in the 2+ hours we were there.","['Buffet', 1]",Buffet,1.0,1,buffet
+Oliveira's Steak House,5,"Buffet offers a big, varied selection to compliment the constant supply of meat cut off of skewers by the waiters. Everything I tried was delicious, especially the pork ribs.
+
+My only complain would be that you can't pick which meats you want. I went in really wanting some lamb sirloin and the ribs. The ribs came at the very end, no lamb ever came around in the 2+ hours we were there.","['Pork ribs', 1]",Pork ribs,1.0,17,Meat
+Oliveira's Steak House,5,Probably one of the best quality price restaurants in Boston,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,"I love coming here! Oliveira's always has that nice family restaurant feel with its super friendly wait staff and delicious food. I love the cheese steak and the cinnamon pineapple that circulates around the room. I always get the all you can eat option - it includes the food at the buffet, plus the meat that appears by your table accompanied by a friendly waiter/waitress. One of my go to places for protein.","['cheese steak', 1]",cheese steak,1.0,3,Flank steak
+Oliveira's Steak House,5,"I love coming here! Oliveira's always has that nice family restaurant feel with its super friendly wait staff and delicious food. I love the cheese steak and the cinnamon pineapple that circulates around the room. I always get the all you can eat option - it includes the food at the buffet, plus the meat that appears by your table accompanied by a friendly waiter/waitress. One of my go to places for protein.","['cinnamon pineapple', 1]",cinnamon pineapple,1.0,24,cinnamon pineapple
+Oliveira's Steak House,5,"I love coming here! Oliveira's always has that nice family restaurant feel with its super friendly wait staff and delicious food. I love the cheese steak and the cinnamon pineapple that circulates around the room. I always get the all you can eat option - it includes the food at the buffet, plus the meat that appears by your table accompanied by a friendly waiter/waitress. One of my go to places for protein.","['all you can eat option', 1]",all you can eat option,1.0,5,food
+Oliveira's Steak House,4,"It was good, but the place was crowded for being in a pandemic",No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,"A very enjoyable experience!  Bustling is an understatement, but gives the place a vibe that is such a nice break from the usual.  The food options are impressive, whether it's the buffet or the never-ending parade of meat skewers.  It's easy to be overwhelmed, but flip your card to ""red"" and relax.  Once you're ready for the next round, they'll be there.","['buffet', 1]",buffet,1.0,1,buffet
+Oliveira's Steak House,4,"A very enjoyable experience!  Bustling is an understatement, but gives the place a vibe that is such a nice break from the usual.  The food options are impressive, whether it's the buffet or the never-ending parade of meat skewers.  It's easy to be overwhelmed, but flip your card to ""red"" and relax.  Once you're ready for the next round, they'll be there.","['meat skewers', 1]",meat skewers,1.0,17,Meat
+Oliveira's Steak House,5,First time I came here loved it and now I'm back to try more and different exotic foods from Brazil you will have to experience it for your self you will not be disappointed service very pleasing and a family/romactic feel or just eat at the bar and watch the games,No Meals in Review,,0.5,0,
+Oliveira's Steak House,1,The waitress was pushing us to leave even though there were many tables available. Extremely rude. Won’t come back here.,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,Nice food and services,"['food', 1]",food,1.0,5,food
+Oliveira's Steak House,5,Nice food and services,"['services', 1]",services,1.0,6,service
+Oliveira's Steak House,5,"I have no idea why I haven't been there sooner! The place is awesome, they have the meats! I went on a Friday night and it was busy but the service was prompt and friendly. It's a lot more affordable than Fogo. This is gonna be on my regular restaurant list from now on",No Meals in Review,,0.5,0,
+Oliveira's Steak House,3,"Decent Brazilian Steakhouse. Plenty of staff at the restaurant and they are all very friendly. However, all of their meats are oversalted. I'm not sure what the issue is, but the flavor profile for all of the steaks tasted the same. The salt really overkilled everything. I will admit that several of the cuts were tender and rather juicy. I really wish I could give a higher review, only if they could tone down their salt levels.","['Brazilian Steakhouse', 0.5]",Brazilian Steakhouse,0.5,4,Brazilian Steakhouse
+Oliveira's Steak House,5,This place it awesome the food was delicious.,"['food', 1]",food,1.0,5,food
+Oliveira's Steak House,5,"Great place if you are a meat lover. Brazilian style grill is the speciality. Lots of good options in the salad bar. The variety is good in the main course too with meat, fish etc. The grill is the best part though. Must try the garlic sirloin. But honestly all the meat from the grill was good. You could go for the option to have food by weight or else have the all you can eat option where they bring the meat to your table and get it there for you. Overall a great experience.","['salad bar', 1]",salad bar,1.0,10,salad bar
+Oliveira's Steak House,5,"Great place if you are a meat lover. Brazilian style grill is the speciality. Lots of good options in the salad bar. The variety is good in the main course too with meat, fish etc. The grill is the best part though. Must try the garlic sirloin. But honestly all the meat from the grill was good. You could go for the option to have food by weight or else have the all you can eat option where they bring the meat to your table and get it there for you. Overall a great experience.","['main course', 1]",main course,1.0,20,main course
+Oliveira's Steak House,5,"Great place if you are a meat lover. Brazilian style grill is the speciality. Lots of good options in the salad bar. The variety is good in the main course too with meat, fish etc. The grill is the best part though. Must try the garlic sirloin. But honestly all the meat from the grill was good. You could go for the option to have food by weight or else have the all you can eat option where they bring the meat to your table and get it there for you. Overall a great experience.","['garlic sirloin', 1]",garlic sirloin,1.0,22,garlic sirloin
+Oliveira's Steak House,5,"Great place if you are a meat lover. Brazilian style grill is the speciality. Lots of good options in the salad bar. The variety is good in the main course too with meat, fish etc. The grill is the best part though. Must try the garlic sirloin. But honestly all the meat from the grill was good. You could go for the option to have food by weight or else have the all you can eat option where they bring the meat to your table and get it there for you. Overall a great experience.","['meat from the grill', 1]",meat from the grill,1.0,17,Meat
+Oliveira's Steak House,5,Can't wait to go back,No Meals in Review,,0.5,0,
+Oliveira's Steak House,3,"For a steakhouse, the ambiance left a lot to be desired.  The staff were wonderful & attentive. The steaks prepared well.  The salad bar and wine list options were too low end. I've been to 5 different 'Brazil Grill' type restaurants on the east coast and this was the least classy, and unfortunately the only disappointing one of the bunch.","['steaks', 0.8]",steaks,0.8,3,Flank steak
+Oliveira's Steak House,3,"For a steakhouse, the ambiance left a lot to be desired.  The staff were wonderful & attentive. The steaks prepared well.  The salad bar and wine list options were too low end. I've been to 5 different 'Brazil Grill' type restaurants on the east coast and this was the least classy, and unfortunately the only disappointing one of the bunch.","['salad bar', 0.2]",salad bar,0.2,10,salad bar
+Oliveira's Steak House,3,"For a steakhouse, the ambiance left a lot to be desired.  The staff were wonderful & attentive. The steaks prepared well.  The salad bar and wine list options were too low end. I've been to 5 different 'Brazil Grill' type restaurants on the east coast and this was the least classy, and unfortunately the only disappointing one of the bunch.","['wine list', 0.2]",wine list,0.2,25,wine list
+Oliveira's Steak House,5,"Oh boy, what can I say.. Hands down to the best Brazilian experience in the solar system. Let's start with the staff and service: exceptional service and friendly staff take this experience to a whole another level (and one of the waiters have a wonderful voice). The service is non-stop, you don't get to finish that glorious piece of meat, and the waiter is there serving the next goodies. The salad and sides buffet is really nice (don't miss the creamy beef stroganoff). Want a specific piece of meat with customized cutting; you can wait by the window where you can ask for whatever you want. THIS IS A MUST VISIT RESTAURANT...","['salad and sides buffet', 1]",salad and sides buffet,1.0,1,buffet
+Oliveira's Steak House,4,Love the place! Waiters are so nice and friendly.  Food is great! Wish bathroom stall was a bit biger.,"['Food', 1]",Food,1.0,5,food
+Oliveira's Steak House,5,Best brazillian food in boston area!!!,"['Brazilian', 1]",Brazilian,1.0,11,Brazilian
+Oliveira's Steak House,4,"Really Nice place, very enjoyable. The food is 😋  delicious :)","['food', 1]",food,1.0,5,food
+Oliveira's Steak House,5,Good brazilian restaurant ...highly recommended.,"['Brazilian', 1]",Brazilian,1.0,11,Brazilian
+Oliveira's Steak House,5,What great rest.  The services its 5 stars  love it here.  On of the servers  name is Valmir what great guy very frendly and kind..,No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,Meat is great but it needs to be refurbished to get a bit of more elegant touch. Service fantastic they go for the extra mile,"['Meat', 1]",Meat,1.0,17,Meat
+Oliveira's Steak House,4,Meat is great but it needs to be refurbished to get a bit of more elegant touch. Service fantastic they go for the extra mile,"['Service', 1]",Service,1.0,6,service
+Oliveira's Steak House,5,"Great atmosphere, great food and excellent service.","['food', 1]",food,1.0,5,food
+Oliveira's Steak House,5,"Great atmosphere, great food and excellent service.","['service', 1]",service,1.0,6,service
+Oliveira's Steak House,3,Food was great but we had to wait about 30 minutes after our reservation time to be seated. We were a group of 2.  I don't know if they were busier than usual or if it's always like this but we were among 20 other people waiting in the entrance area. It was really cramped and uncomfortable. I hope this isn't normal or they need to adjust their reservation system.,"['Food', 1]",Food,1.0,5,food
+Oliveira's Steak House,5,"Great rodizio of delicious meats, great desserts, cozy atmosphere.","['rodizio', 1]",rodizio,1.0,16,rodizio
+Oliveira's Steak House,5,"Great rodizio of delicious meats, great desserts, cozy atmosphere.","['desserts', 1]",desserts,1.0,14,Desserts
+Oliveira's Steak House,5,"Delicious food and drinks, awesome service, the staff is really nice and attentive. Great place for family.","['food', 1]",food,1.0,5,food
+Oliveira's Steak House,5,"Delicious food and drinks, awesome service, the staff is really nice and attentive. Great place for family.","['drinks', 1]",drinks,1.0,9,drinks
+Oliveira's Steak House,5,"Delicious food and drinks, awesome service, the staff is really nice and attentive. Great place for family.","['service', 1]",service,1.0,6,service
+Oliveira's Steak House,5,"Meat is good, not excellent. Service is quick and salad bar has great selection. Prices are lower than fancy steakhouse (I.e. about 9$per pound). I will go back here.","['Meat', 0.75]",Meat,0.75,17,Meat
+Oliveira's Steak House,5,"The buffet was Awesome, they continuously bring meat around to your table and cut it in front of you.","['buffet', 1]",buffet,1.0,1,buffet
+Oliveira's Steak House,4,Great food and fun,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,"Good food, fresh meat,  friendly workers","['Good food', 1.0]",Good food,1.0,18,food
+Oliveira's Steak House,5,Best Brazilian steakhouse in the area. Very affordable and worth the drive for the amazing food.,"['Brazilian steakhouse', 1]",Brazilian steakhouse,1.0,4,Brazilian Steakhouse
+Oliveira's Steak House,5,Another great excellent place the nice fresh food family-oriented all staff of people friendly helpful and so on excellent place,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,"The food was very delicious, the server was promply attentive whenever we needed something, and the manager was super friendly! Great place for churrasco!",PaLM Response is in incorrect format,,0.5,7,
+Oliveira's Steak House,4,If you in the area definitely a place to go make sure you hungry when you get there I was so full I wasn't even able to go get a second round Buffett awesome all types of choices salad bar awesome,"['Buffet', 1]",Buffet,1.0,1,buffet
+Oliveira's Steak House,4,If you in the area definitely a place to go make sure you hungry when you get there I was so full I wasn't even able to go get a second round Buffett awesome all types of choices salad bar awesome,"['salad bar', 1]",salad bar,1.0,10,salad bar
+Oliveira's Steak House,5,"Excelent place for comet, Very good service from the waiters and especially the beautiful waitresses.","['comet', 1]",comet,1.0,19,comet
+Oliveira's Steak House,5,This place offers the best Brazilian bbq in the area with a more laid-back atmosphere. Great place to pickup great food or sit down for a nice dinner. Prices are cheap (quality is high) and the place is clean.,"['Brazilian bbq', 1]",Brazilian bbq,1.0,4,Brazilian Steakhouse
+Oliveira's Steak House,5,"Oliveira's has great food, drinks, cappuccinos and deserts , it also has a very nice atmosphere, they have recently added an outdoor patio area to eat outside when the weather is nice, the staff at oliveira's have a great demeanor and work hard to please the customers,  I go and get takeout once or twice a week and bring it back to my work,  its quick and easy,  they are open everyday till late night.","['food', 1]",food,1.0,5,food
+Oliveira's Steak House,5,"Oliveira's has great food, drinks, cappuccinos and deserts , it also has a very nice atmosphere, they have recently added an outdoor patio area to eat outside when the weather is nice, the staff at oliveira's have a great demeanor and work hard to please the customers,  I go and get takeout once or twice a week and bring it back to my work,  its quick and easy,  they are open everyday till late night.","['drinks', 1]",drinks,1.0,9,drinks
+Oliveira's Steak House,5,"Oliveira's has great food, drinks, cappuccinos and deserts , it also has a very nice atmosphere, they have recently added an outdoor patio area to eat outside when the weather is nice, the staff at oliveira's have a great demeanor and work hard to please the customers,  I go and get takeout once or twice a week and bring it back to my work,  its quick and easy,  they are open everyday till late night.","['cappuccinos', 1]",cappuccinos,1.0,8,cappuccinos
+Oliveira's Steak House,5,"Oliveira's has great food, drinks, cappuccinos and deserts , it also has a very nice atmosphere, they have recently added an outdoor patio area to eat outside when the weather is nice, the staff at oliveira's have a great demeanor and work hard to please the customers,  I go and get takeout once or twice a week and bring it back to my work,  its quick and easy,  they are open everyday till late night.","['deserts', 1]",deserts,1.0,14,Desserts
+Oliveira's Steak House,5,Meat is high quality for very low price. Hot and cold salad bar/buffet items are delicious.,"['Meat', 1]",Meat,1.0,17,Meat
+Oliveira's Steak House,5,Meat is high quality for very low price. Hot and cold salad bar/buffet items are delicious.,"['Hot and cold salad bar/buffet items', 1]",Hot and cold salad bar/buffet items,1.0,10,salad bar
+Oliveira's Steak House,4,"The meats here are phenomenal, and so is the price! This place is a bargain.
+
+The downside, and why I gave it 4 as opposed to 5 stars is that the ambiance is lacking (a lot).
+
+However, if you don't care about how the interior looks and want some great tasting carne, then go to Oliveria's, it's amazing!","['Meats', 1]",Meats,1.0,17,Meat
+Oliveira's Steak House,5,Went there very good service a lot food prices good . very happy going back more often. 😀 muito bom.,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,"Excellent food, go with an empty stomach","['food', 1]",food,1.0,5,food
+Oliveira's Steak House,5,The food is really good. Bring your picky kids here they will love it like my son.,"['food', 1]",food,1.0,5,food
+Oliveira's Steak House,5,"Great food, easy service! My Go to every time I'm close",No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,Best when you go get the buffet,"['buffet', 1]",buffet,1.0,1,buffet
+Oliveira's Steak House,5,Best brazilian food around the corner,"['Brazilian', 1]",Brazilian,1.0,11,Brazilian
+Oliveira's Steak House,5,Amazing great place great food great people,No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,"Good food, especially the roasted meat.","['roasted meat', 1]",roasted meat,1.0,17,Meat
+Oliveira's Steak House,5,Nice stake awesome,PaLM Response is in incorrect format,,0.5,7,
+Oliveira's Steak House,5,Great Brazilian pay by the pound buffet.,"['Brazilian pay by the pound buffet', 1]",Brazilian pay by the pound buffet,1.0,4,Brazilian Steakhouse
+Oliveira's Steak House,5,The flat steak is unbelievable you have to try it,"['flat steak', 1]",flat steak,1.0,3,Flank steak
+Oliveira's Steak House,5,Incredible food but it was just so crowded when we went that it was a bit overwhelming.,"['Incredible food', 1]",Incredible food,1.0,2,Great food
+Oliveira's Steak House,5,Excellent,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,Great food,"['Great food', 1]",Great food,1.0,2,Great food
+Oliveira's Steak House,5,Great food,"['Great food', 1]",Great food,1.0,2,Great food
+Oliveira's Steak House,5,Great food,"['Great food', 1]",Great food,1.0,2,Great food
+Oliveira's Steak House,3,"Amazing flavor,  good food, but very expensive, it's absolutely ridiculous their price,  also they change the entrance stupid idea,  it was better the way it was now if people are not careful they'll step one one's foot, things were better the way they use to be!!!!","['food', 0.75]",food,0.75,18,food
+Oliveira's Steak House,3,"Amazing flavor,  good food, but very expensive, it's absolutely ridiculous their price,  also they change the entrance stupid idea,  it was better the way it was now if people are not careful they'll step one one's foot, things were better the way they use to be!!!!","['price', 0.0]",price,0.0,12,price
+Oliveira's Steak House,5,Amazing,No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,pay by weight,"['pay by weight', 0.5]",pay by weight,0.5,21,pay by weight
+Oliveira's Steak House,2,Less variety on buffet,"['buffet', 0.5]",buffet,0.5,1,buffet
+Oliveira's Steak House,5,Perfect place,No Meals in Review,,0.5,0,
+Oliveira's Steak House,3,Ok,"['Ok', 0.5]",Ok,0.5,23,Ok
+Oliveira's Steak House,4,A bit pricey,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,Best steak ever,"['steak', 1]",steak,1.0,3,Flank steak
+Oliveira's Steak House,5,Good option for food,No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,Good food.,"['Good food.', 1]",Good food.,1.0,2,Great food
+Oliveira's Steak House,5,Great food!,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,Great,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,Great customer service,No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,"(Translated by Google) Great service!!
+
+(Original)
+Ótimo atendimento!!",No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,"(Translated by Google) The quality of the service is good, some attendants are very friendly and attentive! The variety of dishes in the buffet is good and has good options, the presentation of the dishes is great, the temperature of the food is good, the taste is great, even compared to the other houses of the chain, the environment is clean wide and organized, including In the bathrooms there is a reasonable availability of parking spaces!
+
+(Original)
+A qualidade do atendimento é boa, alguns atendentes são bastante simpáticos e atenciosos! A variedade de pratos no buffet é boa e apresenta boas opções, a apresentação dos pratos é otima, a temperatura da comida é boa, o sabor é otimo, mesmo se comparado as demais casas da rede, o ambiente é limpo amplo e organizado, incluindo os banheiros, há uma disponibilidade razoável de vagas de estacionanento!",No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,"(Translated by Google) And a very cute place with very delicious food I loved the
+
+(Original)
+E um lugar muito bunito com a comida muita gostosa amei la","['food', 1]",food,1.0,5,food
+Oliveira's Steak House,4,"(Translated by Google) Good place great food but the price of drinks gets in the way
+
+(Original)
+Lugar bom comida ótima mas o preço das bebidas atrapalha","['food', 0.8]",food,0.8,18,food
+Oliveira's Steak House,4,"(Translated by Google) Good place great food but the price of drinks gets in the way
+
+(Original)
+Lugar bom comida ótima mas o preço das bebidas atrapalha","['drinks', 0.2]",drinks,0.2,9,drinks
+Oliveira's Steak House,5,"(Translated by Google) The food is exquisite and it is very similar to the Dominican food I loved it I will be back soon.
+
+(Original)
+La comida es exquisita y es muy parecida a la comida Dominicana me encantó volveré pronto.",No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,"(Translated by Google) For those who like Brazilian food, I highly recommend
+
+(Original)
+Pra quem gosta de comida brasileira, super recomendo","['Brazilian food', 1]",Brazilian food,1.0,4,Brazilian Steakhouse
+Oliveira's Steak House,5,"(Translated by Google) Excellent
+
+(Original)
+Excelente",No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,"(Translated by Google) Excellent service and menu
+
+(Original)
+Excelente servicio y menú",No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,"(Translated by Google) I recommend it 100%
+
+(Original)
+Lo recomiendo 100%",No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,"(Translated by Google) Very good and good price.
+
+(Original)
+Muito bom e bom preço.",No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,"(Translated by Google) Wonderful! !
+
+(Original)
+Maravilhoso! !",No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,4,,No Meals in Review,,0.5,0,
+Oliveira's Steak House,5,,No Meals in Review,,0.5,0,
