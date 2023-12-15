@@ -40,11 +40,21 @@
    ```bash
    pip install requirements.txt
 
-2. Navigate to streamlit folder :
+2. Add a .env file with following credentials:
+   ```bash
+   SNOWFLAKE_USER=
+   SNOWFLAKE_PASSWORD=
+   SNOWFLAKE_ACCOUNT=
+   SERPAPI_KEY = 
+   ID = ""
+   IDTS = ""
+   IDCC = ""
+   
+3. Navigate to streamlit folder :
    ```bash
    cd streamlit
 
-3. Run the following command :
+4. Run the following command :
    ```bash
    streamlit run app.py
 
