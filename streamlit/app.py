@@ -362,7 +362,7 @@ if  st.session_state['login'] == True:
 
         
         st.subheader("**Documentation**")
-        st.markdown("- 📖 [Presentation](https://wepik.com/edit/9ad95fa2-c2ae-4cf0-8395-1b6dd5acddd8)")
+        st.markdown("- 📖 [Presentation](https://wepik.com/share/9ad95fa2-c2ae-4cf0-8395-1b6dd5acddd8#rs=link)")
         st.markdown("- ⏰ [Progress Report](https://docs.google.com/presentation/d/17kCFljf3qQ_N1jVAuPRQN1Kkjuj9VNN2pcAsQIeOGnE/edit#slide=id.g28262b8e96a_2_275)")
         st.markdown("- 🛫 [Git Repo](https://github.com/LLM-App-DataEng-Group2/BiteBuddy.git) ")
         st.markdown("- 📋 [Project Report](BiteBuddy/report/BiteBuddy.pdf) ")
