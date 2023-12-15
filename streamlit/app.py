@@ -1,6 +1,6 @@
 import streamlit as st
 from auth_user import create_user,login_user
-from utils import get_diet_answers
+#from utils import get_diet_answers
 import sys
 sys.path.insert(0, '../serpapi_data_ingestion')
 sys.path.insert(1, '../snowflake')
