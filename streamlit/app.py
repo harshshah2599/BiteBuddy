@@ -35,7 +35,7 @@ bard = BardCookies(cookie_dict=cookie_dict)
 st.set_page_config(page_title="BiteBuddy", layout="wide")
 with st.sidebar:
     # bitebuddy logo
-    st.image('../BiteBuddy Logo.png', width=200)
+    st.image('../BiteBuddy Logo.png', width=120)
     # options menu
     selected = st.selectbox("Menu", ["Log In", 'Sign Up'])
     
@@ -82,7 +82,17 @@ with st.sidebar:
 
 if  st.session_state['login'] != True:
     st.header("Still Staring at the Restuarant menu??😶")
-    st.image('images/3.webp', width=550)
+    # Create two columns to display images side by side
+    col1, col2 = st.columns(2)
+
+    # Display the first image in the first column
+    with col1:
+        st.image('https://media.giphy.com/media/3o6MbngOgiMhf9A4xy/giphy.gif', width=500)
+
+    # Display the second image in the second column
+    with col2:
+        st.image('https://media.giphy.com/media/l2JdWalFNd7IP4UKI/giphy.gif', width=500)
+
     st.header("Let us help... will you?")
     
 if  st.session_state['login'] == True:
