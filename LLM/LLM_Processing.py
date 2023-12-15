@@ -23,7 +23,7 @@ from sklearn.cluster import AgglomerativeClustering, KMeans
 
 ###############################################################################
 # Load variables from .env file
-load_dotenv('C:\\Users\\j.videlefsky\\Documents\\DAMG7374 - GenAI and DataEng\\BiteBuddy\\.env')
+load_dotenv('/Users/akshaysawant/LLM/BiteBuddy/.env')
 # Access variables
 PALM_API_KEY = os.getenv("PALM_API_KEY")
 

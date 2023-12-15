@@ -13,7 +13,7 @@ from LLM_Processing import *
 from bardapi import BardCookies
 
 
-load_dotenv('C:\\Users\\j.videlefsky\\Documents\\DAMG7374 - GenAI and DataEng\\BiteBuddy\\.env')
+load_dotenv('/Users/akshaysawant/LLM/BiteBuddy/.env')
 # Access variables
 token1 = os.getenv("ID")
 token2 = os.getenv("IDTS")
@@ -28,9 +28,6 @@ cookie_dict = {
 bard = BardCookies(cookie_dict=cookie_dict)
 
 
-user_type = st.session_state.get("user_type")  # Get user type from session state
-
-
 
 st.set_page_config(page_title="BiteBuddy", layout="wide")
 with st.sidebar:
@@ -42,7 +39,6 @@ with st.sidebar:
     # log in form
     if 'login' not in st.session_state:
         st.session_state['login'] = False
-        st.session_state['is_admin'] = False
 
 
 
@@ -56,12 +52,10 @@ with st.sidebar:
         if st.button('Log In!'):
             # send login request
             st.session_state['login'] = login_user(login_username,login_password)
-            st.session_state['is_admin'] = is_admin(login_username,login_password)
 
         if st.session_state['login'] == True:
             if st.button("Logout"):
                 st.session_state['login'] = False
-                st.session_state['is_admin'] = False
 
     # # Sign-up form
     if selected == "Sign Up":
@@ -347,27 +341,25 @@ if  st.session_state['login'] == True:
         st.markdown('''A personal dish recommendation app that leverages AI to help you make your choice.''')
         
         st.markdown(''' **How to use the App** : It's  just a click away!''')
-        st.markdown(" 1. Go to Explore Restaurant")
-        st.markdown(" 2. Select the restaurant you are at")
-        st.markdown(" 3. Hit the Get Recommendation tab")
-        st.text("Voila!!! You have a list of best dishes at your disposal!")
+        st.markdown(" 1. 💁‍♀️ Go to Explore Restaurant")
+        st.markdown(" 2. 🔎 Search the restaurant you are at")
+        st.markdown(" 3. 🚀 Hit the Get Recommendation tab")
+        st.text(" 💃💃 Voila!!! You have a list of best dishes at your disposal!💃💃")
 
 
         
         st.subheader("**Documentation**")
-        st.markdown("- [Presentation]()")
-        st.markdown("- [Project Report](http://google.com.au/)")
-        st.markdown("- [Progress Report](https://docs.google.com/presentation/d/17kCFljf3qQ_N1jVAuPRQN1Kkjuj9VNN2pcAsQIeOGnE/edit#slide=id.g28262b8e96a_2_275)")
-        st.markdown("- [Git Repo](https://github.com/LLM-App-DataEng-Group2/BiteBuddy.git)")
-        
-        
+        st.markdown("- 📖 [Presentation](https://wepik.com/edit/9ad95fa2-c2ae-4cf0-8395-1b6dd5acddd8)")
+        st.markdown("- ⏰ [Progress Report](https://docs.google.com/presentation/d/17kCFljf3qQ_N1jVAuPRQN1Kkjuj9VNN2pcAsQIeOGnE/edit#slide=id.g28262b8e96a_2_275)")
+        st.markdown("- 🛫 [Git Repo](https://github.com/LLM-App-DataEng-Group2/BiteBuddy.git) ")
+        st.markdown("- 📋 [Project Report](BiteBuddy/report/BiteBuddy.pdf) ")
+
         st.subheader("**Data and Technologies**")
         st.image('images/image.png', width=400)
         st.image('images/llm.png', width=400) 
 
 
         
-
         # dummy comment
 
 
