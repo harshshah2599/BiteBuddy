@@ -16,19 +16,19 @@ import requests
 from io import BytesIO
 
 
-load_dotenv('/Users/harsh/GenAI/Bitebuddy/BiteBuddy/.env')
+load_dotenv('C:\\Users\\j.videlefsky\\Documents\\DAMG7374 - GenAI and DataEng\\BiteBuddy\\.env')
 # Access variables
-token1 = os.getenv("ID")
-token2 = os.getenv("IDTS")
-token3 = os.getenv("IDCC")
+# token1 = os.getenv("ID")
+# token2 = os.getenv("IDTS")
+# token3 = os.getenv("IDCC")
 
-cookie_dict = {
-    "__Secure-1PSID": token1,
-    "__Secure-1PSIDTS": token2,
-    "__Secure-1PSIDCC": token3,
-}
+# cookie_dict = {
+#     "__Secure-1PSID": token1,
+#     "__Secure-1PSIDTS": token2,
+#     "__Secure-1PSIDCC": token3,
+# }
 
-bard = BardCookies(cookie_dict=cookie_dict)
+# bard = BardCookies(cookie_dict=cookie_dict)
 
 
 
@@ -129,7 +129,6 @@ if  st.session_state['login'] == True:
 
 
             # If new restaurant, get reviews and process them
-            st.write('TODO: code to get reviews and process them')
             # if value for selected_restaurant_b
             if selected_restaurant_b:
                 #################################################################################
@@ -171,7 +170,7 @@ if  st.session_state['login'] == True:
             # snowflake_df.rename(columns={'CLUSTER_LABEL': 'MEAL_NAME'}, inplace=True)
             snowflake_df = snowflake_df[['BUSINESS_NAME', 'MEAL_NAME', 'RECOMMENDATION_SCORE', 'TOTAL_REVIEWS', 'AVG_REVIEW_RATING', 'AVG_MEAL_SENTIMENT']].sort_values(by='RECOMMENDATION_SCORE', ascending=False)
             # List of keywords to filter out
-            keywords_to_filter = ['food', 'drink', 'restaurant', '', 'price', 'breakfast', 'brunch', 'lunch', 'dinner', 'delicious', 'tasty', 'service', 'atmosphere']
+            keywords_to_filter = ['food', 'drink', 'restaurant', '', 'price', 'breakfast', 'brunch', 'lunch', 'dinner', 'delicious', 'tasty', 'service', 'atmosphere', 'place', ]
 
             # Drop rows where 'MEAL_NAME' contains any of the specified keywords and 'TOTAL_REVIEWS' is less than 2 and 'MEAL_NAME' contains 'food'
             snowflake_df = snowflake_df[(~snowflake_df['MEAL_NAME'].str.lower().isin(keywords_to_filter)) & 
@@ -256,6 +255,9 @@ if  st.session_state['login'] == True:
 
         else:
             st.warning("Please select a restaurant first")
+
+
+    ############################################################################################################
     with tab3:
             st.header("Help us help you. We value your Feedback!")
 
@@ -266,7 +268,12 @@ if  st.session_state['login'] == True:
             selected_restaurant = selected_restaurant.replace("'", "''")
 
             snowflake_df = get_reviews_summary(selected_restaurant)
-            meal_names = snowflake_df[['MEAL_NAME']]
+            # Drop rows where 'MEAL_NAME' contains any of the specified keywords and 'TOTAL_REVIEWS' is less than 2 and 'MEAL_NAME' contains 'food'
+            snowflake_df = snowflake_df[(~snowflake_df['MEAL_NAME'].str.lower().isin(keywords_to_filter)) & 
+                                        (snowflake_df['TOTAL_REVIEWS'] >= 2) & 
+                                        (~snowflake_df['MEAL_NAME'].str.contains('food', case=False))]
+
+            meal_names = snowflake_df[['MEAL_NAME']].sort_values(by='MEAL_NAME', ascending=False)
             selected_meal = st.selectbox("Select the meal you were recommended:", meal_names)
             
 
@@ -286,6 +293,8 @@ if  st.session_state['login'] == True:
                     post_user_feedback(selected_restaurant,selected_meal,positive_feedback)
                     # You can store the feedback value here in a database or use it as needed
 
+
+    ############################################################################################################
     with tab4:
         st.title("BITEBUDDY x GEMINI 🚀")
         st.info('Disclaimer: This is an attempt to clone Gemini Pro functionalities into BiteBuddy and explore the future scope of our app prior to the API being available officially', icon="⚠️")
@@ -339,6 +348,7 @@ if  st.session_state['login'] == True:
                 st.write(bard_answer['content'])
 
 
+    ############################################################################################################
     with tab5:
         st.header("**BiteBuddy**")
         st.markdown('''A personal dish recommendation app that leverages AI to help you make your choice.''')
@@ -365,13 +375,12 @@ if  st.session_state['login'] == True:
         
         # dummy comment
 
-
+    ############################################################################################################
     with tab6:
         if login_username == "admin" and login_password =="admin":
         
             # Only have access to this tab if logged in as admin else redirect to home page
-            st.title("Monitoring... Coming Soon!")
-            st.write("Admin Monitoring Reports will be displayed here!")
+            st.title("Monitoring Dashboard")
 
             #####################################################
             # Feedback Monitoring:
@@ -437,7 +446,8 @@ if  st.session_state['login'] == True:
             st.error("Unauthorized user!")
             st.error("Only Admins can view this page!")
     
-        
+
+    ############################################################################################################    
     with tab7:
         #select box for restaurant names
         restaurant_list = get_restaurants()

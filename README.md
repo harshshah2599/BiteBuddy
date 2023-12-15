@@ -40,11 +40,16 @@
    ```bash
    pip install requirements.txt
 
-2. Navigate to streamlit folder :
+2. Change the path of the .env to your path:
+   - app.py
+   - snowflkae_data.py
+   - snowflake_conn.py
+
+3. Navigate to streamlit folder :
    ```bash
    cd streamlit
 
-3. Run the following command :
+4. Run the following command :
    ```bash
    streamlit run app.py
 

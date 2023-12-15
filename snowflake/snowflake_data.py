@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 ###############################################################################
 # Load variables from .env file
-load_dotenv('/Users/harsh/GenAI/Bitebuddy/BiteBuddy/.env')
+load_dotenv('C:\\Users\\j.videlefsky\\Documents\\DAMG7374 - GenAI and DataEng\\BiteBuddy\\.env')
 # Access variables
 SNOWFLAKE_USER = os.getenv("SNOWFLAKE_USER")
 SNOWFLAKE_PASSWORD = os.getenv("SNOWFLAKE_PASSWORD")
@@ -75,6 +75,7 @@ def get_reviews(business_name):
     cursor.execute(f"""SELECT business_name, review_text
                         FROM DAMG7374.staging.reviews
                         WHERE BUSINESS_NAME = '{business_name}'
+                                and review_text is not null
                         LIMIT 10""")
 
     # Fetch data
