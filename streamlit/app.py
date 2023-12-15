@@ -35,7 +35,7 @@ load_dotenv('C:\\Users\\j.videlefsky\\Documents\\DAMG7374 - GenAI and DataEng\\B
 st.set_page_config(page_title="BiteBuddy", layout="wide")
 with st.sidebar:
     # bitebuddy logo
-    st.image('../BiteBuddy Logo.png', width=200)
+    st.image('../BiteBuddy Logo.png', width=120)
     # options menu
     selected = st.selectbox("Menu", ["Log In", 'Sign Up'])
     
@@ -82,7 +82,17 @@ with st.sidebar:
 
 if  st.session_state['login'] != True:
     st.header("Still Staring at the Restuarant menu??😶")
-    st.image('images/3.webp', width=550)
+    # Create two columns to display images side by side
+    col1, col2 = st.columns(2)
+
+    # Display the first image in the first column
+    with col1:
+        st.image('https://media.giphy.com/media/3o6MbngOgiMhf9A4xy/giphy.gif', width=500)
+
+    # Display the second image in the second column
+    with col2:
+        st.image('https://media.giphy.com/media/l2JdWalFNd7IP4UKI/giphy.gif', width=500)
+
     st.header("Let us help... will you?")
     
 if  st.session_state['login'] == True:
@@ -362,7 +372,7 @@ if  st.session_state['login'] == True:
 
         
         st.subheader("**Documentation**")
-        st.markdown("- 📖 [Presentation](https://wepik.com/edit/9ad95fa2-c2ae-4cf0-8395-1b6dd5acddd8)")
+        st.markdown("- 📖 [Presentation](https://wepik.com/share/9ad95fa2-c2ae-4cf0-8395-1b6dd5acddd8#rs=link)")
         st.markdown("- ⏰ [Progress Report](https://docs.google.com/presentation/d/17kCFljf3qQ_N1jVAuPRQN1Kkjuj9VNN2pcAsQIeOGnE/edit#slide=id.g28262b8e96a_2_275)")
         st.markdown("- 🛫 [Git Repo](https://github.com/LLM-App-DataEng-Group2/BiteBuddy.git) ")
         st.markdown("- 📋 [Project Report](BiteBuddy/report/BiteBuddy.pdf) ")

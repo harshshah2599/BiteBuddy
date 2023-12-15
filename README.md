@@ -34,22 +34,30 @@
 
 #### Part 2
 
-- **Run the Backend**
-
 1. Install the requirements.txt
    ```bash
    pip install requirements.txt
 
-2. Change the path of the .env to your path:
+2. Add a .env file with following credentials:
+   ```bash
+   SNOWFLAKE_USER=
+   SNOWFLAKE_PASSWORD=
+   SNOWFLAKE_ACCOUNT=
+   SERPAPI_KEY = 
+   ID = ""
+   IDTS = ""
+   IDCC = ""
+
+3. Change the path of the .env to your path:
    - app.py
-   - snowflkae_data.py
+   - snowflake_data.py
    - snowflake_conn.py
 
-3. Navigate to streamlit folder :
+4. Navigate to streamlit folder :
    ```bash
    cd streamlit
 
-4. Run the following command :
+5. Run the following command :
    ```bash
    streamlit run app.py
 
