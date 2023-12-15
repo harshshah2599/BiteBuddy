@@ -35,7 +35,7 @@ load_dotenv('C:\\Users\\j.videlefsky\\Documents\\DAMG7374 - GenAI and DataEng\\B
 st.set_page_config(page_title="BiteBuddy", layout="wide")
 with st.sidebar:
     # bitebuddy logo
-    st.image('../BiteBuddy Logo.png', width=120)
+    st.image('../BiteBuddy Logo.png', width=200)
     # options menu
     selected = st.selectbox("Menu", ["Log In", 'Sign Up'])
     
@@ -278,12 +278,15 @@ if  st.session_state['login'] == True:
             selected_restaurant = selected_restaurant.replace("'", "''")
 
             snowflake_df = get_reviews_summary(selected_restaurant)
+            # List of keywords to filter out
+            keywords_to_filter = ['food', 'drink', 'restaurant', '', 'price', 'breakfast', 'brunch', 'lunch', 'dinner', 'delicious', 'tasty', 'service', 'atmosphere', 'place', ]
+
             # Drop rows where 'MEAL_NAME' contains any of the specified keywords and 'TOTAL_REVIEWS' is less than 2 and 'MEAL_NAME' contains 'food'
             snowflake_df = snowflake_df[(~snowflake_df['MEAL_NAME'].str.lower().isin(keywords_to_filter)) & 
                                         (snowflake_df['TOTAL_REVIEWS'] >= 2) & 
                                         (~snowflake_df['MEAL_NAME'].str.contains('food', case=False))]
 
-            meal_names = snowflake_df[['MEAL_NAME']].sort_values(by='MEAL_NAME', ascending=False)
+            meal_names = snowflake_df[['MEAL_NAME']].sort_values(by='MEAL_NAME')
             selected_meal = st.selectbox("Select the meal you were recommended:", meal_names)
             
 
