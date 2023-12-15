@@ -11,9 +11,12 @@ from snowflake_data import *
 import plotly.express as px
 from LLM_Processing import *
 from bardapi import BardCookies
+from PIL import Image
+import requests
+from io import BytesIO
 
 
-load_dotenv('/Users/akshaysawant/LLM/BiteBuddy/.env')
+load_dotenv('/Users/harsh/GenAI/Bitebuddy/BiteBuddy/.env')
 # Access variables
 token1 = os.getenv("ID")
 token2 = os.getenv("IDTS")
@@ -431,7 +434,8 @@ if  st.session_state['login'] == True:
             st.plotly_chart(fig_credits_used_overtime_df, use_container_width=True)
         
         else:
-            st.error("Unauthorized")
+            st.error("Unauthorized user!")
+            st.error("Only Admins can view this page!")
     
         
     with tab7:
@@ -442,20 +446,7 @@ if  st.session_state['login'] == True:
 
         
             df, reviews, img_urls, restaurant_data = get_serpapi_reviews(selected_restaurant)
-            # title = restaurant_data.get('place_info', {}).get('title')
-            # st.title(title)
 
-            # st.subheader('Restaurant Type')
-            # st.write(', '.join(restaurant_data['type']))
-            
-            # st.subheader('Description')
-            # st.write(restaurant_data['description'])
-            
-            # st.subheader('Menu')
-            # st.write(restaurant_data['menu']['source'])
-            # st.write(restaurant_data['menu']['link'])
-
-            # Extracting relevant information
             restaurant_name = restaurant_data['place_info']['title']
             description = f"Address: {restaurant_data['place_info']['address']}\nRating: {restaurant_data['place_info']['rating']}\nReviews: {restaurant_data['place_info']['reviews']}"
 
@@ -498,9 +489,19 @@ if  st.session_state['login'] == True:
 
                 for col, image_url in zip(cols, row_images):
                     with col:
-                        if image_url:  # Check if URL is not empty
-                            st.image(image_url, use_column_width=True)
-                        else:
-                            st.write("No image available")
+                        try:
+                            if image_url:  # Check if URL is not empty
+                                response = requests.get(image_url)
+                                img = Image.open(BytesIO(response.content))
 
+                                # Check if the image can be opened without an error
+                                img.verify()
+
+                                # If the image is valid, display it
+                                st.image(image_url, use_column_width=True)
+                            else:
+                                st.write("No image available")
+                        except Exception as e:
+                            st.write(f"Unable to display image: {image_url}")
+                            st.write(f"Error: {e}")
 
