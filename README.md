@@ -34,8 +34,6 @@
 
 #### Part 2
 
-- **Run the Backend**
-
 1. Install the requirements.txt
    ```bash
    pip install requirements.txt
