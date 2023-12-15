@@ -1,5 +1,5 @@
 import streamlit as st
-from auth_user import create_user,login_user
+from auth_user import create_user,login_user, get_users
 #from utils import get_diet_answers
 import sys
 sys.path.insert(0, '../serpapi_data_ingestion')
@@ -451,6 +451,13 @@ if  st.session_state['login'] == True:
             #chart
             fig_credits_used_overtime_df=px.bar(credits_used_overtime_df,x='USAGE_DATE',y='TOTAL_CREDITS_USED',color='WAREHOUSE_NAME',orientation='v',title="Credits Used Overtime")
             st.plotly_chart(fig_credits_used_overtime_df, use_container_width=True)
+
+
+            #############################################
+            #     Total Users
+            #############################################
+            st.subheader("Total Users Overview:")
+            get_users()
         
         else:
             st.error("Unauthorized user!")
