@@ -21,7 +21,7 @@
 <li>💻 <a href="https://docs.google.com/presentation/d/17kCFljf3qQ_N1jVAuPRQN1Kkjuj9VNN2pcAsQIeOGnE/edit#slide=id.g28262b8e96a_2_268">Proposal</a> </li>
 <li>⏰ <a href="https://docs.google.com/document/d/1YcQwmBuYPS7HSb4ALRMpa9Gh8zakGQQZ15gFDOKEQ34/edit">Progress Documentation</a> </li>
 <li>📖 <a href="https://wepik.com/share/9ad95fa2-c2ae-4cf0-8395-1b6dd5acddd8#rs=link">Presentation Slides </a> </li>
-<li>📋 <a href="BiteBuddy/report/BiteBuddy.pdf">Project Report</a></li>
+<li>📋 <a href="https://github.com/LLM-App-DataEng-Group2/BiteBuddy/tree/14e06cbd283a127ab057e47673c5808f3e3b17ce/report">Project Report</a></li>
 
 </ul>
 
