@@ -13,6 +13,8 @@
 
 **Use BiteBuddy and eat like a local!**
 
+### Proposed Architecture:
+![image](https://github.com/harshshah2599/BiteBuddy-Make-Informed-Dining-Choices-with-AI/assets/114712818/142b8cbd-a5ae-44b2-add8-f88be0c7fd81)
 
 ### Work Docs:
 
